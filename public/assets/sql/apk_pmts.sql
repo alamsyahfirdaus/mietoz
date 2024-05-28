@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 23, 2024 at 05:37 PM
+-- Generation Time: May 28, 2024 at 04:38 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.0.19
 
@@ -252,7 +252,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `username`, `telephone`, `password`, `profile`, `created_at`, `updated_at`) VALUES
-(1, 'Alamsyah Firdaus', 'alamsyah.firdaus.af31@gmail.com', 'alamsyah', '089693839624', '$2y$10$GU.nfTJ6OqU2R5Kcihhip.eaPVXTrbTMHRLyJRiTiW3IjbvPQ2o.W', NULL, '2024-05-23 08:17:41', '2024-05-23 08:33:51');
+(1, 'Alamsyah Firdaus', 'alamsyah.firdaus.af31@gmail.com', 'alamsyah', '089693839624', '$2y$10$ZlqscUCa4OcA0ApPBfwLrOmN1qWsuVM0/qDcWajb0UPIq1YecYi6u', NULL, '2024-05-23 08:17:41', '2024-05-28 07:33:37'),
+(3, 'Vinny Rahmasari', 'vinnyrahmasari@gmail.com', 'vinnyrahmasari', '0895400534168', '$2y$10$TYzY.EtObhGavv3EpuWoj.ZYfRQ2rae.2RqLA9PLjLceSllbA5AA2', NULL, '2024-05-28 07:18:14', '2024-05-28 07:18:14');
 
 --
 -- Indexes for dumped tables
@@ -394,7 +395,7 @@ ALTER TABLE `produk`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
