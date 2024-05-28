@@ -37,10 +37,9 @@ class HomeController extends Controller
 
     public function setting()
     {
-        $users = User::orderByDesc('id')->get();
         $data = [
             'title'     => 'Pengaturan',
-            'users'     => $users,
+            'users'     => User::orderByDesc('id')->whereNotIn('id', [1])->get(),
             'bank'      => Bank::orderByDesc('id')->get(),
             'carousel'  => Carousel::orderByDesc('id')->take(5)->get()
 

@@ -24,7 +24,7 @@ class UserController extends Controller
     {
         $data = [
             'title' => 'Pengguna',
-            'users' => User::orderByDesc('id')->get()
+            'users' => User::orderByDesc('id')->whereNotIn('id', [1])->get()
         ];
 
         // return view('user-index', $data);
