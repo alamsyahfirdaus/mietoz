@@ -1,44 +1,47 @@
 @extends('layouts/main')
 @section('content')
     <div class="container">
-        <div class="card my-4" style="border-radius: 8px;">
-            <div class="card-body" style="padding: 0;">
-                <div id="carouselIndicators" class="carousel slide" data-ride="carousel">
-                    <ol class="carousel-indicators">
-                        @foreach ($carousel as $key => $item)
-                            @if ($key <= 4)
-                                <li data-target="#carouselIndicators" data-slide-to="{{ $key }}"
-                                    class="{{ $key == 0 ? 'active' : '' }}"></li>
-                            @endif
-                        @endforeach
-                    </ol>
-                    <div class="carousel-inner" style="border-radius: 8px;">
-                        @foreach ($carousel as $key => $item)
-                            @if ($key <= 4)
-                                <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
-                                    <img class="d-block w-100" src="{{ asset('upload_images/' . $item->gambar) }}"
-                                        alt="{{ $item->judul }}" style="width: 100%; height: 300px; border-radius: 8px;">
-                                </div>
-                            @endif
-                        @endforeach
+        @if (count($carousel) >= 1)
+            <div class="card my-4" style="border-radius: 8px;">
+                <div class="card-body" style="padding: 0;">
+                    <div id="carouselIndicators" class="carousel slide" data-ride="carousel">
+                        <ol class="carousel-indicators">
+                            @foreach ($carousel as $key => $item)
+                                @if ($key <= 4)
+                                    <li data-target="#carouselIndicators" data-slide-to="{{ $key }}"
+                                        class="{{ $key == 0 ? 'active' : '' }}"></li>
+                                @endif
+                            @endforeach
+                        </ol>
+                        <div class="carousel-inner" style="border-radius: 8px;">
+                            @foreach ($carousel as $key => $item)
+                                @if ($key <= 4)
+                                    <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
+                                        <img class="d-block w-100" src="{{ asset('upload_images/' . $item->gambar) }}"
+                                            alt="{{ $item->judul }}"
+                                            style="width: 100%; height: 300px; border-radius: 8px;">
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselIndicators" role="button" data-slide="prev">
+                            <span class="carousel-control-custom-icon" aria-hidden="true" style="border-radius: 8px;">
+                                <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselIndicators" role="button" data-slide="next"
+                            style="border-radius: 8px;">
+                            <span class="carousel-control-custom-icon" aria-hidden="true">
+                                <i class="fas fa-chevron-right"></i>
+                            </span>
+                            <span class="sr-only">Next</span>
+                        </a>
                     </div>
-                    <a class="carousel-control-prev" href="#carouselIndicators" role="button" data-slide="prev">
-                        <span class="carousel-control-custom-icon" aria-hidden="true" style="border-radius: 8px;">
-                            <i class="fas fa-chevron-left"></i>
-                        </span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next" href="#carouselIndicators" role="button" data-slide="next"
-                        style="border-radius: 8px;">
-                        <span class="carousel-control-custom-icon" aria-hidden="true">
-                            <i class="fas fa-chevron-right"></i>
-                        </span>
-                        <span class="sr-only">Next</span>
-                    </a>
                 </div>
             </div>
-        </div>
-        <div class="card card-success card-outline">
+        @endif
+        <div class="card card-success card-outline {{ count($carousel) <= 1 ? 'my-4' : ''  }}">
             <div class="card-header py-2">
                 <p class="card-title m-0" style="padding-left: 0; font-size: 20px; font-weight: bold;">Produk</p>
             </div>
@@ -193,8 +196,9 @@
                                 </div>
                                 <div class="form-group mb-1">
                                     <label for="telepon_pelanggan">Telepon</label>
-                                    <input type="text" class="form-control" id="telepon_pelanggan" name="telepon_pelanggan"
-                                        placeholder="Telepon" value="" autocomplete="off">
+                                    <input type="text" class="form-control" id="telepon_pelanggan"
+                                        name="telepon_pelanggan" placeholder="Telepon" value=""
+                                        autocomplete="off">
                                     <span id="error-telepon_pelanggan" class="error invalid-feedback"></span>
                                 </div>
                                 <div id="opsi_kirim_2" class="form-group mb-1" style="display: none;">
@@ -205,12 +209,12 @@
                                 </div>
                                 <div class="form-group mt-3">
                                     @foreach ([
-                                                'status_pesanan' => 1,
-                                                'total_pembayaran' => '',
-                                                'metode_pembayaran' => 2,
-                                                'biaya_pengiriman' => '0',
-                                                'member' => 2,
-                                            ] as $key => $value)
+            'status_pesanan' => 1,
+            'total_pembayaran' => '',
+            'metode_pembayaran' => 2,
+            'biaya_pengiriman' => '0',
+            'member' => 2,
+        ] as $key => $value)
                                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                                     @endforeach
                                     <button type="button" class="btn btn-outline-success" onclick="payOrder()"

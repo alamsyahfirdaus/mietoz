@@ -53,7 +53,7 @@ class UserController extends Controller
 
         $data = [
             'title'     => 'Pengaturan',
-            'users'     => User::orderByDesc('id')->get(),
+            'users'     => User::orderByDesc('id')->whereNotIn('id', [1])->get(),
             'data'      => $user
         ];
 
@@ -72,7 +72,7 @@ class UserController extends Controller
             'email' => ['required', 'email', isset($user->id) ? Rule::unique('users', 'email')->ignore($user->id) : 'unique:users,email'],
             'username' => isset($user->id) ? ['required', Rule::unique('users', 'username')->ignore($user->id)] : ['nullable'],
             'telephone' => ['required', 'string', 'min:10', isset($user->id) ? Rule::unique('users', 'telephone')->ignore($user->id) : 'unique:users,telephone'],
-            'password' => [empty($user->id) ? 'required' : 'nullable', 'string', empty($user->id) ? 'min:8' : 'sometimes|min:8'],
+            'password' => empty($user->id) ? ['required', 'string', 'min:8'] : ['nullable', 'min:8'],
             'profile' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
 
