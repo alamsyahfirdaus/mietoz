@@ -105,7 +105,7 @@ class HomeController extends Controller
         if ($request->hasFile('gambar')) {
             $fileGambar = $request->file('gambar');
             $namaGambar = time() . '.' . $fileGambar->getClientOriginalExtension();
-            $fileGambar->move(public_path('upload_images'), $namaGambar);
+            $fileGambar->move(config('constants.UPLOAD_PATH'), $namaGambar);
             $carousel->gambar = $namaGambar;
         }
         $carousel->save();
@@ -125,7 +125,7 @@ class HomeController extends Controller
 
         if ($carousel) {
             if ($carousel->gambar) {
-                $pathGambar = public_path('upload_images/' . $carousel->gambar);
+                $pathGambar = config('constants.UPLOAD_PATH') . '/' . $carousel->gambar;
                 if (File::exists($pathGambar)) {
                     File::delete($pathGambar);
                 }

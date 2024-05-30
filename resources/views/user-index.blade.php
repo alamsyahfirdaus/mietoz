@@ -187,11 +187,11 @@
                                                 <td>{{ $item->nomor_rekening }}</td>
                                                 <td style="text-align: center;">
                                                     <div style="display: none;">
-                                                        <input type="text" name="{{ 'id_' . md5($no) }}"
+                                                        <input type="text" name="{{ 'id_' . md5($item->id) }}"
                                                             value="{{ base64_encode($item->id) }}">
-                                                        <input type="text" name="{{ 'nama_' . md5($no) }}"
+                                                        <input type="text" name="{{ 'nama_' . md5($item->id) }}"
                                                             value="{{ $item->nama }}">
-                                                        <input type="text" name="{{ 'nomor_rekening_' . md5($no) }}"
+                                                        <input type="text" name="{{ 'nomor_rekening_' . md5($item->id) }}"
                                                             value="{{ $item->nomor_rekening }}">
                                                     </div>
                                                     <div class="btn-group">
@@ -204,10 +204,10 @@
                                                             {!! Form::open([
                                                                 'route' => ['bank.delete', base64_encode($item->id)],
                                                                 'method' => 'DELETE',
-                                                                'id' => 'remove-' . md5($no),
+                                                                'id' => 'remove-' . md5($item->id),
                                                             ]) !!}
                                                             <a class="dropdown-item" href="javascript:void(0)"
-                                                                onclick="deleteData('{{ md5($no) }}')">Hapus</a>
+                                                                onclick="deleteData('{{ md5($item->id) }}')">Hapus</a>
                                                             {!! Form::close() !!}
                                                         </div>
                                                     </div>

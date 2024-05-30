@@ -87,11 +87,11 @@ class ProductController extends Controller
         if ($request->hasFile('gambar')) {
             $gambarProduk = $request->file('gambar');
             $namaGambar = time() . '.' . $gambarProduk->getClientOriginalExtension();
-            $gambarProduk->move(public_path('upload_images'), $namaGambar);
+            $gambarProduk->move(config('constants.UPLOAD_PATH'), $namaGambar);
             $product->gambar = $namaGambar;
         } else if (!$request->hasFile('gambar') && $request->input('delete_image') == '1') {
             if ($product->gambar) {
-                $gambarPath = public_path('upload_images/' . $product->gambar);
+                $gambarPath = config('constants.UPLOAD_PATH') . '/' . $product->gambar;
                 if (File::exists($gambarPath)) {
                     File::delete($gambarPath);
                 }
@@ -122,7 +122,7 @@ class ProductController extends Controller
         if ($product) {
             // Hapus gambar terkait jika ada
             if ($product->gambar) {
-                $gambarPath = public_path('upload_images/' . $product->gambar);
+                $gambarPath = config('constants.UPLOAD_PATH') . '/' . $product->gambar;
                 if (File::exists($gambarPath)) {
                     File::delete($gambarPath);
                 }
