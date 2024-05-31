@@ -83,6 +83,7 @@ class UserController extends Controller
             $user->username = $request->input('username');
         } else {
             $user->username = strstr($validatedData['email'], '@', true);
+            $user->level    = 1;
         }
 
         if (isset($validatedData['password'])) {

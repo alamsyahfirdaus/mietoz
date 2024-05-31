@@ -19,27 +19,31 @@ class LoginController extends Controller
     {
         // Validasi input dari form login
         $credentials = $request->validate([
-            'username' => ['required'],
-            'password' => ['required'],
+            'username' => ['required'], // Username harus diisi
+            'password' => ['required'], // Password harus diisi
         ]);
-
+    
         // Coba melakukan otentikasi pengguna dengan kredensial yang diberikan
         if (Auth::attempt($credentials)) {
             // Jika otentikasi berhasil, perbarui sesi
             $request->session()->regenerate();
-
-            // Simpan role pengguna ke dalam session
-            // $role = Auth::user()->role;
-            $role = !Auth::user()->hasCustomerId() ? 1 : 2;
-            session(['role' => $role]);
-
+    
+            // Mendapatkan instance pengguna yang sedang login
+            $user = Auth::user();
+            
+            // Menyimpan role dan level pengguna ke dalam sesi
+            session([
+                'role'  => !$user->hasCustomerId() ? 1 : 2, // Role 1 jika tidak memiliki Customer ID, 2 jika memiliki
+                'level' => $user->level // Menyimpan level pengguna dari kolom 'level' di tabel 'users'
+            ]);
+    
             // Kirim respons sukses
             return response()->json(['success' => true]);
         }
-
+    
         // Jika otentikasi gagal, kirim respons dengan kode status 422 dan pesan error
         return response()->json(['error' => 'Login Gagal!'], 422);
-    }
+    }       
 
     public function logout(Request $request)
     {

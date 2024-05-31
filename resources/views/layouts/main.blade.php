@@ -145,18 +145,25 @@
                                 <a href="{{ route('home') }}"
                                     class="nav-link {{ Request::segment(1) == 'home' ? 'active' : '' }}">Beranda</a>
                             </li>
-                            <li class="nav-item">
-                                <a href="{{ route('product') }}"
-                                    class="nav-link {{ Request::segment(1) == 'product' ? 'active' : '' }}">Produk</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('customer') }}"
-                                    class="nav-link {{ Request::segment(1) == 'customer' ? 'active' : '' }}">Pelanggan</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('order') }}"
-                                    class="nav-link {{ Request::segment(1) == 'order' ? 'active' : '' }}">Penjualan</a>
-                            </li>
+                            @if (session('level') == 1)
+                                <li class="nav-item">
+                                    <a href="{{ route('product') }}"
+                                        class="nav-link {{ Request::segment(1) == 'product' ? 'active' : '' }}">Produk</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('customer') }}"
+                                        class="nav-link {{ Request::segment(1) == 'customer' ? 'active' : '' }}">Pelanggan</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('order') }}"
+                                        class="nav-link {{ Request::segment(1) == 'order' ? 'active' : '' }}">Penjualan</a>
+                                </li>
+                            @else
+                                <li class="nav-item">
+                                    <a href="{{ route('order') }}"
+                                        class="nav-link {{ Request::segment(1) == 'order' ? 'active' : '' }}">Pendapatan</a>
+                                </li>
+                            @endif
                         </ul>
                     </div>
                 @else
@@ -203,7 +210,7 @@
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 <a href="{{ route('login') }}" class="dropdown-item">
-                                    <i class="fas fa-sign-in-alt mr-2"></i> Login Admin/Kasir
+                                    <i class="fas fa-sign-in-alt mr-2"></i> Login
                                 </a>
                             </div>
                         </li>

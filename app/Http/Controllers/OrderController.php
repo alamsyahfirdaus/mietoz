@@ -21,7 +21,7 @@ class OrderController extends Controller
     public function index()
     {
         $data = [
-            'title'         => 'Penjualan',
+            'title'         => session('level') == 3 ? 'Pendapatan' : 'Penjualan',
             'order'         => Order::with(['customer', 'payment'])->orderByDesc('id')->get(),
             'product'       => Product::orderByDesc('id')->get(),
             'customer'      => Customer::whereNotNull('kode')->orderBy('nama')->get(),
