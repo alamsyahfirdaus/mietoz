@@ -144,7 +144,7 @@ class HomeController extends Controller
         $data = array(
             'title'     => '',
             'carousel'  => Carousel::all(),
-            'product'   => Product::orderByDesc('id')->get(),
+            'product'   => Product::with(['category'])->orderByDesc('id')->get(),
         );
 
         return view('shop', $data);
@@ -185,21 +185,34 @@ class HomeController extends Controller
         ]);
 
         $order = Order::where('no_transaksi', $request->no_transaksi)->first();
+        $payment = OrderPayment::where('id_pesanan', $order->id)->first();
 
-        if ($request->hasFile('bukti_pembayaran')) {
-            $file = $request->file('bukti_pembayaran');
-            $fileName = date('YmdHis') . '-' . $order->id . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('upload_images'), $fileName);
+        if (!$payment->bukti_pembayaran) {
+            if ($request->hasFile('bukti_pembayaran')) {
+                $file = $request->file('bukti_pembayaran');
+                $fileName = date('YmdHis') . '-' . $order->id . '.' . $file->getClientOriginalExtension();
+                $file->move(config('constants.UPLOAD_PATH'), $fileName);
+    
+                OrderPayment::updateOrCreate(
+                    ['id_pesanan' => $order->id],
+                    ['bukti_pembayaran' => $fileName]
+                );
 
-            OrderPayment::updateOrCreate(
-                ['id_pesanan' => $order->id],
-                ['bukti_pembayaran' => $fileName]
-            );
+                $message = 'Bukti pembayaran berhasil terkirim dan sedang dalam proses verifikasi.';
+            }
+        } else {
+            if ($order->status_pesanan == 3) {
+                $message = 'Pesanan telah selesai.';
+            } else {
+                $message = 'Pesanan sedang diproses.';
+            }
+            
         }
+        
 
         $data = [
             'success'       => true,
-            'message'       => 'Bukti pembayaran berhasil terkirim dan sedang dalam proses verifikasi.',
+            'message'       => $message,
             'previous'      => true
         ];
 

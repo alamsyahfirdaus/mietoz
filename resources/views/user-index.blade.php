@@ -4,7 +4,7 @@
         <div class="row">
             @if (session('level') == 3)
                 <div class="col-lg-12">
-                    <div class="card {{ isset($data) ? 'card-success card-outline' : '' }}">
+                    <div class="card {{ isset($data) ? 'card-danger card-outline' : '' }}">
                         @if (empty($data))
                             <div class="card-header p-2">
                                 <ul class="nav nav-pills">
@@ -46,7 +46,7 @@
                                                         <td style="text-align: center;">
                                                             <div class="btn-group">
                                                                 <button type="button"
-                                                                    class="btn btn-success btn-sm dropdown-toggle"
+                                                                    class="btn btn-danger btn-sm dropdown-toggle"
                                                                     data-toggle="dropdown">Aksi </button>
                                                                 <div class="dropdown-menu" role="menu">
                                                                     <a class="dropdown-item"
@@ -143,7 +143,7 @@
                                                     class="btn btn-secondary btn-sm">
                                                     <i class="fas fa-times-circle"></i> Batal
                                                 </a>
-                                                <button type="submit" class="btn btn-success btn-sm float-right"><i
+                                                <button type="submit" class="btn btn-danger btn-sm float-right"><i
                                                         class="fas fa-save"></i>
                                                     Simpan</button>
                                             </div>
@@ -156,7 +156,7 @@
                 </div>
             @empty($data)
                 <div class="col-lg-6">
-                    <div class="card card-success card-outline">
+                    <div class="card card-danger card-outline">
                         <div class="card-header">
                             <h3 class="card-title">Daftar Rekening</h3>
                             <div class="card-tools">
@@ -198,7 +198,7 @@
                                                     </div>
                                                     <div class="btn-group">
                                                         <button type="button"
-                                                            class="btn btn-success btn-sm dropdown-toggle"
+                                                            class="btn btn-danger btn-sm dropdown-toggle"
                                                             data-toggle="dropdown">Aksi </button>
                                                         <div class="dropdown-menu" role="menu">
                                                             <a class="dropdown-item" href="javascript:void(0)"
@@ -224,7 +224,7 @@
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <div class="card card-success card-outline">
+                    <div class="card card-danger card-outline">
                         <div class="card-header">
                             <h3 class="card-title">Daftar Banner</h3>
                             <div class="card-tools">
@@ -258,7 +258,7 @@
                                                 <td style="text-align: center;">
                                                     <div class="btn-group">
                                                         <button type="button"
-                                                            class="btn btn-success btn-sm dropdown-toggle"
+                                                            class="btn btn-danger btn-sm dropdown-toggle"
                                                             data-toggle="dropdown">Aksi </button>
                                                         <div class="dropdown-menu" role="menu">
                                                             {!! Form::open([
@@ -283,7 +283,7 @@
             @endempty
         @else
             <div class="col-lg-12">
-                <div class="card card-success card-outline">
+                <div class="card card-danger card-outline">
                     <div class="card-header">
                         <h3 class="card-title">Daftar Banner</h3>
                         <div class="card-tools">
@@ -317,7 +317,7 @@
                                             <td style="text-align: center;">
                                                 <div class="btn-group">
                                                     <button type="button"
-                                                        class="btn btn-success btn-sm dropdown-toggle"
+                                                        class="btn btn-danger btn-sm dropdown-toggle"
                                                         data-toggle="dropdown">Aksi </button>
                                                     <div class="dropdown-menu" role="menu">
                                                         {!! Form::open([
@@ -358,7 +358,7 @@
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><i
                             class="fas fa-times-circle"></i> Batal</button>
-                    <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-save"></i>
+                    <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-save"></i>
                         Simpan</button>
                 </div>
             </form>

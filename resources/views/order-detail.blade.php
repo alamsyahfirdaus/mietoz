@@ -170,12 +170,12 @@
                                     </form>
                                 @endif
                                 <a href="{{ route('order.invoice', ['id' => base64_encode($data['order']->id)]) }}"
-                                    rel="noopener" class="btn btn-success btn-sm float-right" style="font-weight: bold;"><i
+                                    rel="noopener" class="btn btn-danger btn-sm float-right" style="font-weight: bold;"><i
                                         class="fas fa-print"></i> Cetak
                                     Nota</a>
                             @else
                                 <a href="javascript:void(0)" onclick="confirmPayment()" rel="noopener"
-                                    class="btn btn-success btn-sm float-right" style="font-weight: bold;"><i
+                                    class="btn btn-danger btn-sm float-right" style="font-weight: bold;"><i
                                         class="fas fa-exchange-alt"></i> Konfirmasi Bayar</a>
                             @endif
                         </div>

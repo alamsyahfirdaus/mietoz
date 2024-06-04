@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 28, 2024 at 04:38 PM
+-- Generation Time: Jun 04, 2024 at 03:38 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.0.19
 
@@ -63,6 +63,18 @@ CREATE TABLE `detail_pesanan` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `kategori`
+--
+
+CREATE TABLE `kategori` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nama` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `deskripsi` text COLLATE utf8mb4_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `migrations`
 --
 
@@ -85,7 +97,9 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (6, '2024_04_07_151450_create_pembayaran_table', 1),
 (7, '2024_04_07_151805_create_detail_pesanan_table', 1),
 (8, '2024_04_15_114528_create_bank_table', 1),
-(9, '2024_04_15_114701_create_carousel_table', 1);
+(9, '2024_04_15_114701_create_carousel_table', 1),
+(10, '2024_06_02_153439_create_kategori_table', 1),
+(11, '2024_06_02_153545_add_kategori_id_to_produk_table', 1);
 
 -- --------------------------------------------------------
 
@@ -101,32 +115,6 @@ CREATE TABLE `pelanggan` (
   `alamat` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `id_user` bigint(20) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `pelanggan`
---
-
-INSERT INTO `pelanggan` (`id`, `kode`, `nama`, `telepon`, `alamat`, `id_user`) VALUES
-(1, '00000001', 'John Doe', '0814567890', NULL, NULL),
-(2, '00000002', 'Jane Smith', '0817654321', NULL, NULL),
-(3, '00000003', 'David Johnson', '0815678901', NULL, NULL),
-(4, '00000004', 'Emily Davis', '0816789012', NULL, NULL),
-(5, '00000005', 'Michael Wilson', '0817890123', NULL, NULL),
-(6, '00000006', 'Jessica Martinez', '0818901234', NULL, NULL),
-(7, '00000007', 'Chris Brown', '0819012345', NULL, NULL),
-(8, '00000008', 'Amanda Taylor', '0810123456', NULL, NULL),
-(9, '00000009', 'Matthew Thomas', '0811234567', NULL, NULL),
-(10, '00000010', 'Sarah Lee', '0812345678', NULL, NULL),
-(11, '00000011', 'Ryan White', '0813456789', NULL, NULL),
-(12, '00000012', 'Ashley Harris', '0815792468', NULL, NULL),
-(13, '00000013', 'Justin Clark', '0816801357', NULL, NULL),
-(14, '00000014', 'Nicole Lewis', '0818765432', NULL, NULL),
-(15, '00000015', 'Daniel Walker', '0817654321', NULL, NULL),
-(16, '00000016', 'Stephanie Hall', '0816543210', NULL, NULL),
-(17, '00000017', 'Kevin Young', '0815432109', NULL, NULL),
-(18, '00000018', 'Lauren King', '0814321098', NULL, NULL),
-(19, '00000019', 'Brandon Wright', '0813210987', NULL, NULL),
-(20, '00000020', 'Megan Scott', '0812109876', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -197,37 +185,38 @@ CREATE TABLE `produk` (
   `harga` decimal(10,2) NOT NULL,
   `diskon` int(11) DEFAULT NULL,
   `deskripsi` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `gambar` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `gambar` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id_kategori` bigint(20) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `produk`
 --
 
-INSERT INTO `produk` (`id`, `kode`, `nama`, `stok`, `harga`, `diskon`, `deskripsi`, `gambar`) VALUES
-(1, '00000001', 'Ramen Seafood', 50, '20000.00', NULL, NULL, NULL),
-(2, '00000002', 'Ramen Katsu', 45, '25000.00', NULL, NULL, NULL),
-(3, '00000003', 'Ramen Tulang Ceker', 60, '18000.00', NULL, NULL, NULL),
-(4, '00000004', 'Ramen Spesial', 40, '25000.00', NULL, NULL, NULL),
-(5, '00000005', 'Hotplate Seafood', 30, '20000.00', NULL, NULL, NULL),
-(6, '00000006', 'Hotplate Katsu', 35, '25000.00', NULL, NULL, NULL),
-(7, '00000007', 'Hotplate Ciken Steak', 25, '22000.00', NULL, NULL, NULL),
-(8, '00000008', 'Hotplate Tulang Ceker', 50, '18000.00', NULL, NULL, NULL),
-(9, '00000009', 'Hotplate Tulang', 45, '16000.00', NULL, NULL, NULL),
-(10, '00000010', 'Hotplate Ceker', 50, '16000.00', NULL, NULL, NULL),
-(11, '00000011', 'Hotplate Jumbo', 20, '25000.00', NULL, NULL, NULL),
-(12, '00000012', 'Udon Seafood', 40, '25000.00', NULL, NULL, NULL),
-(13, '00000013', 'Udon Katsu', 35, '28000.00', NULL, NULL, NULL),
-(14, '00000014', 'Udon Tulang Ceker', 30, '20000.00', NULL, NULL, NULL),
-(15, '00000015', 'Udon Spesial', 25, '30000.00', NULL, NULL, NULL),
-(16, '00000016', 'Udon Goreng Seafood', 40, '25000.00', NULL, NULL, NULL),
-(17, '00000017', 'Udon Goreng Tung Ce', 35, '23000.00', NULL, NULL, NULL),
-(18, '00000018', 'Sosis', 100, '6000.00', NULL, NULL, NULL),
-(19, '00000019', 'Kentang', 90, '10000.00', NULL, NULL, NULL),
-(20, '00000020', 'Katsu', 80, '12000.00', NULL, NULL, NULL),
-(21, '00000021', 'Ciken Stik', 70, '10000.00', NULL, NULL, NULL),
-(22, '00000022', 'Pangsit', 60, '10000.00', NULL, NULL, NULL),
-(23, '00000023', 'Enoki Crispy', 110, '8000.00', NULL, NULL, NULL);
+INSERT INTO `produk` (`id`, `kode`, `nama`, `stok`, `harga`, `diskon`, `deskripsi`, `gambar`, `id_kategori`) VALUES
+(1, '00000001', 'Ramen Seafood', 50, '20000.00', NULL, NULL, NULL, NULL),
+(2, '00000002', 'Ramen Katsu', 45, '25000.00', NULL, NULL, NULL, NULL),
+(3, '00000003', 'Ramen Tulang Ceker', 60, '18000.00', NULL, NULL, NULL, NULL),
+(4, '00000004', 'Ramen Spesial', 40, '25000.00', NULL, NULL, NULL, NULL),
+(5, '00000005', 'Hotplate Seafood', 30, '20000.00', NULL, NULL, NULL, NULL),
+(6, '00000006', 'Hotplate Katsu', 35, '25000.00', NULL, NULL, NULL, NULL),
+(7, '00000007', 'Hotplate Ciken Steak', 25, '22000.00', NULL, NULL, NULL, NULL),
+(8, '00000008', 'Hotplate Tulang Ceker', 50, '18000.00', NULL, NULL, NULL, NULL),
+(9, '00000009', 'Hotplate Tulang', 45, '16000.00', NULL, NULL, NULL, NULL),
+(10, '00000010', 'Hotplate Ceker', 50, '16000.00', NULL, NULL, NULL, NULL),
+(11, '00000011', 'Hotplate Jumbo', 20, '25000.00', NULL, NULL, NULL, NULL),
+(12, '00000012', 'Udon Seafood', 40, '25000.00', NULL, NULL, NULL, NULL),
+(13, '00000013', 'Udon Katsu', 35, '28000.00', NULL, NULL, NULL, NULL),
+(14, '00000014', 'Udon Tulang Ceker', 30, '20000.00', NULL, NULL, NULL, NULL),
+(15, '00000015', 'Udon Spesial', 25, '30000.00', NULL, NULL, NULL, NULL),
+(16, '00000016', 'Udon Goreng Seafood', 40, '25000.00', NULL, NULL, NULL, NULL),
+(17, '00000017', 'Udon Goreng Tung Ce', 35, '23000.00', NULL, NULL, NULL, NULL),
+(18, '00000018', 'Sosis', 100, '6000.00', NULL, NULL, NULL, NULL),
+(19, '00000019', 'Kentang', 90, '10000.00', NULL, NULL, NULL, NULL),
+(20, '00000020', 'Katsu', 80, '12000.00', NULL, NULL, NULL, NULL),
+(21, '00000021', 'Ciken Stik', 70, '10000.00', NULL, NULL, NULL, NULL),
+(22, '00000022', 'Pangsit', 60, '10000.00', NULL, NULL, NULL, NULL),
+(23, '00000023', 'Enoki Crispy', 110, '8000.00', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -243,6 +232,7 @@ CREATE TABLE `users` (
   `telephone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `profile` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `level` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -251,9 +241,8 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `username`, `telephone`, `password`, `profile`, `created_at`, `updated_at`) VALUES
-(1, 'Alamsyah Firdaus', 'alamsyah.firdaus.af31@gmail.com', 'alamsyah', '089693839624', '$2y$10$ZlqscUCa4OcA0ApPBfwLrOmN1qWsuVM0/qDcWajb0UPIq1YecYi6u', NULL, '2024-05-23 08:17:41', '2024-05-28 07:33:37'),
-(3, 'Vinny Rahmasari', 'vinnyrahmasari@gmail.com', 'vinnyrahmasari', '0895400534168', '$2y$10$TYzY.EtObhGavv3EpuWoj.ZYfRQ2rae.2RqLA9PLjLceSllbA5AA2', NULL, '2024-05-28 07:18:14', '2024-05-28 07:18:14');
+INSERT INTO `users` (`id`, `name`, `email`, `username`, `telephone`, `password`, `profile`, `level`, `created_at`, `updated_at`) VALUES
+(1, 'Alamsyah Firdaus', 'alamsyah.firdaus.af31@gmail.com', 'alamsyah', NULL, '$2y$10$RiNDPTkJY17opI.G3Ddp5eChlvyAoC.PIi581kuHk4iPUn2WBTxl.', NULL, '3', '2024-06-04 06:20:23', '2024-06-04 06:20:23');
 
 --
 -- Indexes for dumped tables
@@ -279,6 +268,12 @@ ALTER TABLE `detail_pesanan`
   ADD PRIMARY KEY (`id`),
   ADD KEY `detail_pesanan_id_pesanan_foreign` (`id_pesanan`),
   ADD KEY `detail_pesanan_id_produk_foreign` (`id_produk`);
+
+--
+-- Indexes for table `kategori`
+--
+ALTER TABLE `kategori`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `migrations`
@@ -323,15 +318,15 @@ ALTER TABLE `pesanan`
 --
 ALTER TABLE `produk`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `produk_kode_unique` (`kode`);
+  ADD UNIQUE KEY `produk_kode_unique` (`kode`),
+  ADD KEY `produk_id_kategori_foreign` (`id_kategori`);
 
 --
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `users_email_unique` (`email`),
-  ADD UNIQUE KEY `users_username_unique` (`username`);
+  ADD UNIQUE KEY `users_email_unique` (`email`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -356,16 +351,22 @@ ALTER TABLE `detail_pesanan`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `kategori`
+--
+ALTER TABLE `kategori`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `pelanggan`
 --
 ALTER TABLE `pelanggan`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `pembayaran`
@@ -395,7 +396,7 @@ ALTER TABLE `produk`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables
@@ -426,6 +427,12 @@ ALTER TABLE `pembayaran`
 ALTER TABLE `pesanan`
   ADD CONSTRAINT `pesanan_id_kasir_foreign` FOREIGN KEY (`id_kasir`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `pesanan_id_pelanggan_foreign` FOREIGN KEY (`id_pelanggan`) REFERENCES `pelanggan` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `produk`
+--
+ALTER TABLE `produk`
+  ADD CONSTRAINT `produk_id_kategori_foreign` FOREIGN KEY (`id_kategori`) REFERENCES `kategori` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

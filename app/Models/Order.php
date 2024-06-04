@@ -89,15 +89,64 @@ class Order extends Model
         return $formattedData;
     }
 
-    public static function getTransactionsByDate()
+    public static function getTransactionsByDate($tanggal_mulai = null, $tanggal_selesai = null)
     {
-        return static::select(
+        $query = static::select(
             DB::raw('DATE(tanggal_pesanan) as tanggal_pesanan'),
             DB::raw('COUNT(id) as jumlah_transaksi'),
             DB::raw('SUM(total_harga) as total_pendapatan')
         )
             ->where('status_pesanan', 3)
-            ->groupBy(DB::raw('DATE(tanggal_pesanan)'))
-            ->get();
+            ->groupBy(DB::raw('DATE(tanggal_pesanan)'));
+
+        if ($tanggal_mulai) {
+            $tanggal_mulai = date('Y-m-d', strtotime($tanggal_mulai));
+            $query->whereDate('pesanan.tanggal_pesanan', '>=', $tanggal_mulai);
+        }
+
+        if ($tanggal_selesai) {
+            $tanggal_selesai = date('Y-m-d', strtotime($tanggal_selesai));
+            $query->whereDate('pesanan.tanggal_pesanan', '<=', $tanggal_selesai);
+        }
+
+        $dailyTransactions = $query->get();
+
+        $totals = static::select(
+            DB::raw('COUNT(id) as jumlah_transaksi'),
+            DB::raw('SUM(total_harga) as total_pendapatan')
+        )
+            ->where('status_pesanan', 3);
+
+        if ($tanggal_mulai) {
+            $totals->whereDate('pesanan.tanggal_pesanan', '>=', $tanggal_mulai);
+        }
+
+        if ($tanggal_selesai) {
+            $totals->whereDate('pesanan.tanggal_pesanan', '<=', $tanggal_selesai);
+        }
+
+        $totals = $totals->first();
+
+        return [
+            'daily' => $dailyTransactions,
+            'totals' => $totals
+        ];
+    }
+
+    public static function getOrderDates($orderBy = 'asc')
+    {
+        $query = static::select(
+            DB::raw('DATE(tanggal_pesanan) as tanggal')
+        )
+            ->where('status_pesanan', 3)
+            ->groupBy(DB::raw('DATE(tanggal_pesanan)'));
+
+        if ($orderBy === 'desc') {
+            $query->orderByDesc('tanggal_pesanan');
+        } else {
+            $query->orderBy('tanggal_pesanan');
+        }
+
+        return $query->get();
     }
 }

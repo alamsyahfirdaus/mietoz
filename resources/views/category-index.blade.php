@@ -24,31 +24,31 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 5%; text-align: center;">No</th>
-                                        <th style="width: 5%;">Kode</th>
-                                        <th>Nama<span>_</span>Pelanggan</th>
-                                        <th>Telepon</th>
-                                        <th>Alamat</th>
+                                        <th>Nama<span>_</span>Kategori</th>
+                                        <th>Deskripsi</th>
                                         <th style="width: 5%; text-align: center;">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($customer as $key => $item)
+                                    @foreach ($category as $key => $item)
                                         <tr>
                                             <td style="text-align: center;">{{ $key + 1 }}</td>
-                                            <td>{{ $item->kode ?? '-' }}</td>
                                             <td>{{ $item->nama }}</td>
-                                            <td>{{ $item->telepon ?? '-' }}</td>
-                                            <td>{{ $item->alamat ?? '-' }}</td>
+                                            <td>
+                                                <span title="{{ isset($item->deskripsi) ? $item->deskripsi : '' }}">
+                                                    {{ isset($item->deskripsi) ? Str::limit($item->deskripsi, 50) : '-' }}
+                                                </span>
+                                            </td>
                                             <td style="text-align: center;">
                                                 <div class="btn-group">
                                                     <button type="button" class="btn btn-danger btn-sm dropdown-toggle"
                                                         data-toggle="dropdown">Aksi </button>
                                                     <div class="dropdown-menu" role="menu">
                                                         <a class="dropdown-item"
-                                                            href="{{ route('customer.edit', ['id' => base64_encode($item->id)]) }}">Edit</a>
+                                                            href="{{ route('category.edit', ['id' => base64_encode($item->id)]) }}">Edit</a>
                                                         <div class="dropdown-divider"></div>
                                                         {!! Form::open([
-                                                            'route' => ['customer.delete', base64_encode($item->id)],
+                                                            'route' => ['category.delete', base64_encode($item->id)],
                                                             'method' => 'DELETE',
                                                             'id' => 'remove-' . md5($item->id),
                                                         ]) !!}
@@ -65,46 +65,39 @@
                         </div>
                     </div>
                     <div class="{{ isset($data) ? 'active' : '' }} tab-pane" id="tab2">
-                        <form action="{{ route('customer.save', isset($data) ? base64_encode($data->id) : '') }}"
+                        <form action="{{ route('category.save', isset($data) ? base64_encode($data->id) : '') }}"
                             method="POST" enctype="multipart/form-data" id="form-data">
                             @csrf
                             @if (isset($data))
                                 @method('PUT')
                             @endif
-                            <div class="form-group row">
-                                <label for="nama" class="col-sm-2 col-form-label">Nama Pelanggan<small
-                                        style="color: #dc3545;">*</small></label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="nama" id="nama"
-                                        placeholder="Masukan Nama" autocomplete="off" value="{{ isset($data) ? $data->nama : '' }}">
-                                    <span id="error-nama" class="error invalid-feedback"></span>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="telepon" class="col-sm-2 col-form-label">Telepon<small
-                                        style="color: #dc3545;">*</small></label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="telepon" id="telepon"
-                                        placeholder="Masukan Telepon" autocomplete="off" value="{{ isset($data) ? $data->telepon : '' }}">
-                                    <span id="error-telepon" class="error invalid-feedback"></span>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="alamat" class="col-sm-2 col-form-label">Alamat</label>
-                                <div class="col-sm-10">
-                                    <textarea class="form-control" name="alamat" id="alamat" placeholder="Masukan Alamat"></textarea>
-                                    <span id="error-alamat" class="error invalid-feedback">{{ isset($data) ? $data->alamat : '' }}</span>
-                                </div>
-                            </div>
-                            <div class="form-group row pt-2">
-                                <div class="offset-sm-2 col-sm-10">
-                                    <a href="javascript:void(0)" onclick="cancelAdd('{{ isset($data) ? 1 : 0 }}')"
-                                        class="btn btn-secondary btn-sm">
-                                        <i class="fas fa-times-circle"></i> Batal
-                                    </a>
-                                    <button type="submit" class="btn btn-danger btn-sm float-right"><i
-                                            class="fas fa-save"></i>
-                                        Simpan</button>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="nama">Nama Kategori<small style="color: #dc3545;">*</small></label>
+                                        <input type="text" class="form-control" name="nama" id="nama"
+                                            placeholder="Masukan Nama" autocomplete="off"
+                                            value="{{ isset($data) ? $data->nama : '' }}">
+                                        <span id="error-nama" class="error invalid-feedback"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="deskripsi">Deskripsi</label>
+                                        <textarea class="form-control" name="deskripsi" id="deskripsi" placeholder="Masukan Deskripsi">{{ isset($data) ? $data->deskripsi : '' }}</textarea>
+                                        <span id="error-deskripsi" class="error invalid-feedback"></span>
+                                    </div>
+                                    <div class="form-group pt-2">
+                                        {{-- <a href="javascript:void(0)" onclick="cancelAdd('{{ isset($data) ? 1 : 0 }}')"
+                                            class="btn btn-secondary btn-sm">
+                                            <i class="fas fa-times-circle"></i> Batal
+                                        </a> --}}
+                                        <a href="{{ route('product') }}"
+                                            class="btn btn-secondary btn-sm">
+                                            <i class="fas fa-times-circle"></i> Batal
+                                        </a>
+                                        <button type="submit" class="btn btn-danger btn-sm float-right"><i
+                                                class="fas fa-save"></i>
+                                            Simpan</button>
+                                    </div>
                                 </div>
                             </div>
                         </form>

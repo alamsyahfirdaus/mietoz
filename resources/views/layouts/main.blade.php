@@ -21,13 +21,13 @@
             font-family: Arial;
         }
 
-        .navbar-success {
-            border-bottom: 1px solid #28a745;
+        .navbar-dark {
+            border-bottom: 1px solid #dc3545;
         }
 
         a,
         a:hover {
-            color: #28a745;
+            color: #dc3545;
             text-decoration: none;
             background-color: transparent;
         }
@@ -36,7 +36,7 @@
         .dropdown-item:active {
             color: #fff;
             text-decoration: none;
-            background-color: #28a745;
+            background-color: #dc3545;
         }
 
         .brand-text {
@@ -64,13 +64,13 @@
         }
 
         .page-item.active .page-link {
-            background-color: #28a745;
-            border-color: #28a745;
+            background-color: #dc3545;
+            border-color: #dc3545;
         }
 
         .page-link:hover {
             z-index: 2;
-            color: #28a745;
+            color: #dc3545;
             text-decoration: none;
             background-color: #e9ecef;
             border-color: #dee2e6;
@@ -88,7 +88,7 @@
             padding: 0.5rem 0.75rem;
             margin-left: -1px;
             line-height: 1.25;
-            color: #28a745;
+            color: #dc3545;
             background-color: #fff;
             border: 1px solid #dee2e6;
         }
@@ -96,7 +96,7 @@
         .form-control:focus {
             color: #495057;
             background-color: #fff;
-            border-color: #28a745;
+            border-color: #dc3545;
             outline: 0;
             box-shadow: inset 0 0 0 rgba(0, 0, 0, 0);
         }
@@ -109,11 +109,11 @@
         .nav-pills .nav-link.active,
         .nav-pills .show>.nav-link {
             color: #fff;
-            background-color: #28a745;
+            background-color: #dc3545;
         }
 
         .nav-pills .nav-link:not(.active):hover {
-            color: #28a745;
+            color: #dc3545;
         }
 
         .nav-pills li a {
@@ -128,7 +128,7 @@
 
 <body class="hold-transition layout-top-nav">
     <div class="wrapper">
-        <nav class="main-header navbar navbar-expand-md navbar-success navbar-dark">
+        <nav class="main-header navbar navbar-expand-md navbar-danger navbar-dark">
             <div class="container {{ Auth::check() ? '' : 'px-2 py-0' }}">
                 <a href="/" class="navbar-brand" style="{{ Auth::check() ? '' : 'font-size: 24px;' }}">
                     <span class="brand-text">{{ Config::get('constants.APP_NAME') }}</span>
@@ -145,11 +145,20 @@
                                 <a href="{{ route('home') }}"
                                     class="nav-link {{ Request::segment(1) == 'home' ? 'active' : '' }}">Beranda</a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('product') }}"
+                                    class="nav-link {{ Request::segment(1) == 'category' || Request::segment(1) == 'product' ? 'active' : '' }}">Produk</a>
+                            </li>
                             @if (session('level') == 1)
-                                <li class="nav-item">
-                                    <a href="{{ route('product') }}"
-                                        class="nav-link {{ Request::segment(1) == 'product' ? 'active' : '' }}">Produk</a>
-                                </li>
+                                {{-- <li class="nav-item dropdown">
+                                    <a id="dropdownSubMenu1" href="javascript:void(0)" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false" class="nav-link dropdown-toggle {{ Request::segment(1) == 'category' || Request::segment(1) == 'product' ? 'active' : '' }}">Produk</a>
+                                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                                        <li><a href="{{ route('category') }}" class="dropdown-item">Kategori</a></li>
+                                        <li class="dropdown-divider"></li>
+                                        <li><a href="{{ route('product') }}" class="dropdown-item">Produk </a></li>
+                                    </ul>
+                                </li> --}}
                                 <li class="nav-item">
                                     <a href="{{ route('customer') }}"
                                         class="nav-link {{ Request::segment(1) == 'customer' ? 'active' : '' }}">Pelanggan</a>
@@ -295,7 +304,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer justify-content-start">
-                                        <button type="submit" class="btn btn-success btn-sm"><i
+                                        <button type="submit" class="btn btn-danger btn-sm"><i
                                                 class="fas fa-angle-double-up"></i>
                                             Kirim Bukti Bayar</button>
                                     </div>
@@ -479,8 +488,8 @@
                 text: "Anda tidak akan bisa mengembalikannya!",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: "#28a745",
-                cancelButtonColor: "#dc3545",
+                confirmButtonColor: "#dc3545",
+                cancelButtonColor: "#6c757d",
                 confirmButtonText: "Ya, hapus!",
                 cancelButtonText: "Tidak, batalkan!"
             }).then((result) => {

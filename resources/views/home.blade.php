@@ -3,7 +3,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-3 col-6">
-                <div class="small-box bg-success">
+                <div class="small-box bg-danger">
                     <div class="inner">
                         <h3>{{ App\Models\Product::count() }}</h3>
                         <a href="{{ route('product') }}">Jumlah Produk</a>
@@ -11,7 +11,7 @@
                 </div>
             </div>
             <div class="col-lg-3 col-6">
-                <div class="small-box bg-success">
+                <div class="small-box bg-danger">
                     <div class="inner">
                         <h3>{{ App\Models\Customer::count() }}</h3>
                         <a href="{{ route('customer') }}">Jumlah Pelanggan</a>
@@ -19,7 +19,7 @@
                 </div>
             </div>
             <div class="col-lg-3 col-6">
-                <div class="small-box bg-success">
+                <div class="small-box bg-danger">
                     <div class="inner">
                         <h3>{{ App\Models\Order::count() }}</h3>
                         <a href="{{ route('order') }}">Jumlah Transaksi</a>
@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="col-lg-3 col-6">
-                <div class="small-box bg-success">
+                <div class="small-box bg-danger">
                     <div class="inner">
                         @php
                             $pesanan_online = App\Models\Order::countOrdersOnline();
@@ -41,7 +41,7 @@
         <div class="row">
             @if (session('level') == 1)
                 <div class="col-lg-12">
-                    <div class="card card-success card-outline">
+                    <div class="card card-danger card-outline">
                         <div class="card-header">
                             <h5 class="card-title">Pesanan Online</h5>
                             <div class="card-tools">
@@ -83,7 +83,7 @@
                                                 <td style="text-align: center;">
                                                     <div class="btn-group">
                                                         <button type="button"
-                                                            class="btn btn-success btn-sm dropdown-toggle"
+                                                            class="btn btn-danger btn-sm dropdown-toggle"
                                                             data-toggle="dropdown">Aksi </button>
                                                         <div class="dropdown-menu" role="menu">
                                                             <a class="dropdown-item"
@@ -111,20 +111,32 @@
                     </div>
                 </div>
             @endif
-            <div class="col-lg-12">
-                <div class="card card-success card-outline">
+            <div class="col-lg-6">
+                <div class="card card-danger card-outline">
                     <div class="card-header">
                         <h5 class="card-title">Grafik Transaksi {{ date('Y') }}</h5>
                     </div>
                     <div class="card-body">
                         <div class="chart">
-                            <canvas id="grafik-transaksi"
+                            <canvas id="grafik-jumlah-transaksi"
                                 style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6"></div>
+            <div class="col-lg-6">
+                <div class="card card-danger card-outline">
+                    <div class="card-header">
+                        <h5 class="card-title">Grafik Pendapatan {{ date('Y') }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart">
+                            <canvas id="grafik-total-pendapatan"
+                                style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <style>
@@ -139,40 +151,77 @@
                 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
                 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
             ];
-
+    
             var jumlah_transaksi = [];
             var total_pendapatan = [];
-
+    
             for (var i = 1; i <= 12; i++) {
                 jumlah_transaksi.push(salesData[i] ? salesData[i].jumlah_transaksi : 0);
                 total_pendapatan.push(salesData[i] ? salesData[i].total_pendapatan : 0);
             }
-
-            var stackedBarChartCanvas = $('#grafik-transaksi').get(0).getContext('2d');
-
-            var stackedBarChartData = {
+    
+            // Grafik Jumlah Transaksi
+            var transaksiCanvas = $('#grafik-jumlah-transaksi').get(0).getContext('2d');
+            var transaksiData = {
                 labels: labels,
                 datasets: [{
-                    label: 'Jumlah Transaksi',
-                    backgroundColor: '#00a65a',
+                    label: '',
+                    backgroundColor: '#dc3545',
                     data: jumlah_transaksi
-                }, {
-                    label: 'Total Pendapatan',
-                    backgroundColor: '#00c0ef',
+                }]
+            };
+            var transaksiOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    display: false
+                },
+                scales: {
+                    x: {
+                        display: false
+                    },
+                    y: {
+                        display: false
+                    }
+                }
+            };
+            new Chart(transaksiCanvas, {
+                type: 'bar',
+                data: transaksiData,
+                options: transaksiOptions
+            });
+    
+            // Grafik Total Pendapatan
+            var pendapatanCanvas = $('#grafik-total-pendapatan').get(0).getContext('2d');
+            var pendapatanData = {
+                labels: labels,
+                datasets: [{
+                    label: '',
+                    backgroundColor: '#dc3545',
                     data: total_pendapatan
                 }]
             };
-
-            var stackedBarChartOptions = {
+            var pendapatanOptions = {
                 responsive: true,
-                maintainAspectRatio: false
+                maintainAspectRatio: false,
+                legend: {
+                    display: false
+                },
+                scales: {
+                    x: {
+                        display: false
+                    },
+                    y: {
+                        display: false
+                    }
+                }
             };
-
-            new Chart(stackedBarChartCanvas, {
+            new Chart(pendapatanCanvas, {
                 type: 'bar',
-                data: stackedBarChartData,
-                options: stackedBarChartOptions
+                data: pendapatanData,
+                options: pendapatanOptions
             });
         });
     </script>
+       
 @endsection

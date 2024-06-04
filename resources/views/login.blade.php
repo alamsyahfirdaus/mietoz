@@ -30,14 +30,14 @@
 </head>
 
 <body>
-    <div class="container-xxl position-relative bg-white d-flex p-0">
+    <div class="container-xxl position-relative bg-danger d-flex p-0">
         <div class="container-fluid">
             <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
                 <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
-                    <div class="bg-light rounded p-4 p-sm-5 my-4 mx-3">
+                    <div class="bg-white rounded p-4 p-sm-5 my-4 mx-3">
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <a href="javascript:void(0)" style="text-align: center; width: 100%;">
-                                <h3 class="text-success">{{ Config::get('constants.APP_NAME') }}</h3>
+                                <h3 class="text-danger">{{ Config::get('constants.APP_NAME') }}</h3>
                             </a>
                         </div>
                         <form class="mb-3" action="{{ route('login') }}" method="post" enctype="multipart/form-data"
@@ -56,7 +56,7 @@
                                 <label for="password">Password</label>
                                 <span id="error-password" class="error invalid-feedback"></span>
                             </div>
-                            <button type="submit" class="btn btn-success py-3 w-100 mb-4 fw-bold">Login</button>
+                            <button type="submit" class="btn btn-danger py-3 w-100 mb-4 fw-bold">Login</button>
                             {{-- <p class="text-center mb-0">Belum punya Akun? <a class="text-success"
                                     href="javascript:void(0)">Daftar</a></p> --}}
                         </form>

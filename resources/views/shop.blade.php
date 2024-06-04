@@ -41,7 +41,7 @@
                 </div>
             </div>
         @endif
-        <div class="card card-success card-outline {{ count($carousel) <= 1 ? 'my-4' : ''  }}">
+        <div class="card card-danger card-outline {{ count($carousel) <= 1 ? 'my-4' : ''  }}">
             <div class="card-header py-2">
                 <p class="card-title m-0" style="padding-left: 0; font-size: 20px; font-weight: bold;">Produk</p>
             </div>
@@ -71,7 +71,7 @@
                                                                 <div class="custom-control custom-checkbox position-absolute"
                                                                     style="top: 0.5rem; left: 0.5rem; {{ $stok <= 0 ? 'display: none;' : '' }}">
                                                                     <input
-                                                                        class="custom-control-input custom-control-input-success"
+                                                                        class="custom-control-input custom-control-input-danger"
                                                                         type="checkbox" id="{{ 'check_' . md5($item->id) }}"
                                                                         value="{{ base64_encode($item->id) }}">
                                                                     <label for="{{ 'check_' . md5($item->id) }}"
@@ -146,7 +146,7 @@
                         <form action="{{ route('add.order') }}" method="POST" enctype="multipart/form-data" id="form-data"
                             class="pt-3">
                             @csrf
-                            <button type="button" class="btn btn-outline-success mb-3" style="font-weight: bold;"
+                            <button type="button" class="btn btn-outline-danger mb-3" style="font-weight: bold;"
                                 onclick="addProductOrder()"><i class="fas fa-check-double"></i> Daftar
                                 Pesanan</button>
                             <div class="table-responsive">
@@ -179,8 +179,8 @@
                                 <div class="form-group mb-1">
                                     <label for="opsi_pengiriman">Opsi Pengiriman</label>
                                     <select name="opsi_pengiriman" id="opsi_pengiriman"
-                                        class="form-control select2 select2-success"
-                                        data-dropdown-css-class="select2-success" style="width: 100%;">
+                                        class="form-control select2 select2-danger"
+                                        data-dropdown-css-class="select2-danger" style="width: 100%;">
                                         <option value="">Opsi Pengiriman</option>
                                         @foreach (['1' => 'Diambil di Toko', '2' => 'Dikirim ke Alamat Tujuan'] as $key => $value)
                                             <option value="{{ $key }}">{{ $value }}</option>
@@ -217,7 +217,7 @@
         ] as $key => $value)
                                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                                     @endforeach
-                                    <button type="button" class="btn btn-outline-success" onclick="payOrder()"
+                                    <button type="button" class="btn btn-outline-danger" onclick="payOrder()"
                                         style="font-weight: bold;"><i class="fas fa-cart-plus"></i>
                                         Buat Pesanan</button>
                                 </div>
@@ -388,8 +388,8 @@
                             '<input type="text" class="form-control" name="qty_' + productId +
                             '" placeholder="1" value="' +
                             productQuantity + '" autocomplete="off">',
-                            '<select class="form-control select2 select2-success" name="level_' + productId +
-                            '" data-dropdown-css-class="select2-success" style="width: 100%;">' +
+                            '<select class="form-control select2 select2-danger" name="level_' + productId +
+                            '" data-dropdown-css-class="select2-danger" style="width: 100%;">' +
                             '<option value="Tidak Pedas">Tidak Pedas</option>' +
                             '<option value="Pedas Sedang">Pedas Sedang</option>' +
                             '<option value="Sangat Pedas">Sangat Pedas</option>' +

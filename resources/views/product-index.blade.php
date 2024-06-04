@@ -1,19 +1,25 @@
 @extends('layouts/main')
 @section('content')
     <div class="container">
-        <div class="card {{ isset($data) ? 'card-success card-outline' : '' }}">
-            @if (empty($data))
-                <div class="card-header p-2">
-                    <ul class="nav nav-pills">
-                        <li class="nav-item"><a class="nav-link active" href="#tab1" data-toggle="tab">Daftar
-                                {{ $title }}</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#tab2" data-toggle="tab">Tambah
-                                {{ $title }}</a></li>
-                    </ul>
-                </div>
+        <div class="card {{ isset($data) || session('level') != 1 ? 'card-danger card-outline' : '' }}">
+            @if (session('level') == 1)
+                @if (empty($data))
+                    <div class="card-header p-2">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item"><a class="nav-link active" href="#tab1" data-toggle="tab">Daftar
+                                    {{ $title }}</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#tab2" data-toggle="tab">Tambah
+                                    {{ $title }}</a></li>
+                        </ul>
+                    </div>
+                @else
+                    <div class="card-header">
+                        <h3 class="card-title">Edit {{ $title }}</h3>
+                    </div>
+                @endif
             @else
                 <div class="card-header">
-                    <h3 class="card-title">Edit {{ $title }}</h3>
+                    <h3 class="card-title">Daftar {{ $title }}</h3>
                 </div>
             @endif
             <div class="card-body">
@@ -26,13 +32,16 @@
                                         <th style="width: 5%; text-align: center;">No</th>
                                         <th style="width: 5%;">Kode</th>
                                         <th>Nama<span>_</span>Produk</th>
+                                        <th>Kategori</th>
                                         <th>Harga</th>
                                         <th>Diskon</th>
                                         <th>Stok</th>
                                         <th>Terjual</th>
                                         <th>Deskripsi</th>
                                         <th>Gambar</th>
-                                        <th style="width: 5%; text-align: center;">Aksi</th>
+                                        @if (session('level') == 1)
+                                            <th style="width: 5%; text-align: center;">Aksi</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -41,6 +50,7 @@
                                             <td style="text-align: center;">{{ $key + 1 }}</td>
                                             <td>{{ $item->kode ?? '-' }}</td>
                                             <td>{{ $item->nama }}</td>
+                                            <td>{{ $item->category->nama ?? '-' }}</td>
                                             <td>
                                                 @php
                                                     $harga_diskon =
@@ -56,9 +66,14 @@
                                                 <span>{{ 'Rp' . number_format($harga_diskon, 0, ',', '.') }}</span>
                                             </td>
                                             <td>{{ $item->diskon > 0 ? $item->diskon . '%' : '-' }}</td>
-                                            <td>{{ $item->stok - \App\Models\OrderDetail::countProductsSold($item->id) }}
+                                            <td>
+                                                {{ $item->stok - \App\Models\OrderDetail::countProductsSold($item->id) }}
                                             </td>
-                                            <td>{{ \App\Models\OrderDetail::countProductsSold($item->id) }}</td>
+                                            <td>
+                                                <a href="{{ route('product.sold', ['id' => base64_encode($item->id)]) }}"
+                                                    type="button"
+                                                    class="btn btn-block btn-default btn-sm">{{ \App\Models\OrderDetail::countProductsSold($item->id) }}</a>
+                                            </td>
                                             <td>
                                                 <span title="{{ isset($item->deskripsi) ? $item->deskripsi : '' }}">
                                                     {{ isset($item->deskripsi) ? Str::limit($item->deskripsi, 50) : '-' }}
@@ -72,25 +87,27 @@
                                                     <span>-</span>
                                                 @endif
                                             </td>
-                                            <td style="text-align: center;">
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-success btn-sm dropdown-toggle"
-                                                        data-toggle="dropdown">Aksi </button>
-                                                    <div class="dropdown-menu" role="menu">
-                                                        <a class="dropdown-item"
-                                                            href="{{ route('product.edit', ['id' => base64_encode($item->id)]) }}">Edit</a>
-                                                        <div class="dropdown-divider"></div>
-                                                        {!! Form::open([
-                                                            'route' => ['product.delete', base64_encode($item->id)],
-                                                            'method' => 'DELETE',
-                                                            'id' => 'remove-' . md5($item->id),
-                                                        ]) !!}
-                                                        <a class="dropdown-item" href="javascript:void(0)"
-                                                            onclick="deleteData('{{ md5($item->id) }}')">Hapus</a>
-                                                        {!! Form::close() !!}
+                                            @if (session('level') == 1)
+                                                <td style="text-align: center;">
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-danger btn-sm dropdown-toggle"
+                                                            data-toggle="dropdown">Aksi </button>
+                                                        <div class="dropdown-menu" role="menu">
+                                                            <a class="dropdown-item"
+                                                                href="{{ route('product.edit', ['id' => base64_encode($item->id)]) }}">Edit</a>
+                                                            <div class="dropdown-divider"></div>
+                                                            {!! Form::open([
+                                                                'route' => ['product.delete', base64_encode($item->id)],
+                                                                'method' => 'DELETE',
+                                                                'id' => 'remove-' . md5($item->id),
+                                                            ]) !!}
+                                                            <a class="dropdown-item" href="javascript:void(0)"
+                                                                onclick="deleteData('{{ md5($item->id) }}')">Hapus</a>
+                                                            {!! Form::close() !!}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
+                                                </td>
+                                            @endif
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -120,6 +137,30 @@
                                         <span id="error-nama" class="error invalid-feedback"></span>
                                     </div>
                                     <div class="form-group">
+                                        <label for="id_kategori">Kategori<small style="color: #dc3545;">*</small></label>
+                                        <div class="input-group">
+                                            <select name="tanggal_selesai" id="tanggal_selesai"
+                                                class="form-control select2 select2-danger"
+                                                data-dropdown-css-class="select2-danger" style="width: 450px;">
+                                                <option value="">Pilih Kategori</option>
+                                                @foreach ($category as $item)
+                                                    <option value="{{ $item->id }}"
+                                                        {{ isset($data) && $data->id_kategori == $item->id ? 'selected' : '' }}>
+                                                        {{ $item->nama }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <span class="input-group-append">
+                                                <a href="{{ route('category') }}" type="button"
+                                                    class="btn btn-default btn-block"
+                                                    style="border-top-right-radius: 3px; border-bottom-right-radius: 3px; width: 85px; font-weight: normal;">
+                                                    Tambah
+                                                </a>
+                                            </span>
+                                            <span id="error-id_kategori" class="error invalid-feedback"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="harga">Harga<small style="color: #dc3545;">*</small></label>
                                         <input type="text" class="form-control" name="harga" id="harga"
                                             placeholder="Masukan Harga" autocomplete="off"
@@ -128,8 +169,8 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="diskon">Diskon</label>
-                                        <select name="diskon" id="diskon" class="form-control select2 select2-success"
-                                            data-dropdown-css-class="select2-success" style="width: 100%;">
+                                        <select name="diskon" id="diskon" class="form-control select2 select2-danger"
+                                            data-dropdown-css-class="select2-danger" style="width: 100%;">
                                             <option value="">Persentase Diskon</option>
                                             @for ($i = 1; $i <= 100; $i++)
                                                 <option value="{{ $i }}"
@@ -212,7 +253,7 @@
                                     class="btn btn-secondary btn-sm">
                                     <i class="fas fa-times-circle"></i> Batal
                                 </a>
-                                <button type="submit" class="btn btn-success btn-sm float-right"><i
+                                <button type="submit" class="btn btn-danger btn-sm float-right"><i
                                         class="fas fa-save"></i>
                                     Simpan</button>
                             </div>

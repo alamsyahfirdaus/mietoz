@@ -165,7 +165,8 @@ return [
         'telephone' => 'telepon',
         'id_pelanggan' => 'nama pelanggan',
         'nama_pelanggan' => 'nama pembeli',
-        'telepon_pelanggan' => 'telepon'
+        'telepon_pelanggan' => 'telepon',
+        'id_kategori' => 'kategori'
     ],
 
 ];

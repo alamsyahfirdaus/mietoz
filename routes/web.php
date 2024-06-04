@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,11 +61,18 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::match(['post', 'put'], 'user/save/{id?}', [UserController::class, 'save'])->name('user.save');
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('user.delete');
 
+    // CategoryController Routes
+    Route::get('category', [CategoryController::class, 'index'])->name('category');
+    Route::get('category/{id}/edit', [CategoryController::class, 'edit'])->name('category.edit');
+    Route::match(['post', 'put'], 'category/save/{id?}', [CategoryController::class, 'save'])->name('category.save');
+    Route::delete('category/{id}', [CategoryController::class, 'destroy'])->name('category.delete');
+
     // Product Routes
     Route::get('product', [ProductController::class, 'index'])->name('product');
     Route::get('product/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
     Route::match(['post', 'put'], 'product/save/{id?}', [ProductController::class, 'save'])->name('product.save');
     Route::delete('product/{id}', [ProductController::class, 'destroy'])->name('product.delete');
+    Route::match(['get', 'post'], 'product/{id}/sold', [ProductController::class, 'productSold'])->name('product.sold');
 
     // Customer Routes
     Route::get('customer', [CustomerController::class, 'index'])->name('customer');
@@ -73,7 +81,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('customer/{id}', [CustomerController::class, 'destroy'])->name('customer.delete');
 
     // Order Routes
-    Route::get('order', [OrderController::class, 'index'])->name('order');
+    // Route::get('order', [OrderController::class, 'index'])->name('order');
+    Route::match(['get', 'post'], 'order', [OrderController::class, 'index'])->name('order');
     Route::get('order/{id}/edit', [OrderController::class, 'edit'])->name('order.edit');
     Route::put('order/update', [OrderController::class, 'update'])->name('order.update');
     Route::match(['post', 'put'], 'order/save/{id?}', [OrderController::class, 'save'])->name('order.save');

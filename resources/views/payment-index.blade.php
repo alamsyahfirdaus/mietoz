@@ -1,7 +1,7 @@
 @extends('layouts/main')
 @section('content')
     <div class="container">
-        <div class="card {{ isset($data) ? 'card-success card-outline' : '' }}">
+        <div class="card {{ isset($data) ? 'card-danger card-outline' : '' }}">
             @if (empty($data))
                 <div class="card-header p-2">
                     <ul class="nav nav-pills">
@@ -41,7 +41,7 @@
                                             <td>{{ $item->alamat ?? '-' }}</td>
                                             <td style="text-align: center;">
                                                 <div class="btn-group">
-                                                    <button type="button" class="btn btn-success btn-sm dropdown-toggle"
+                                                    <button type="button" class="btn btn-danger btn-sm dropdown-toggle"
                                                         data-toggle="dropdown">Aksi </button>
                                                     <div class="dropdown-menu" role="menu">
                                                         <a class="dropdown-item"
@@ -102,7 +102,7 @@
                                         class="btn btn-secondary btn-sm">
                                         <i class="fas fa-times-circle"></i> Batal
                                     </a>
-                                    <button type="submit" class="btn btn-success btn-sm float-right"><i
+                                    <button type="submit" class="btn btn-danger btn-sm float-right"><i
                                             class="fas fa-save"></i>
                                         Simpan</button>
                                 </div>

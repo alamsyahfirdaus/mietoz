@@ -3,7 +3,7 @@
     <div class="container">
 
         @if (session('level') == 1)
-            <div class="card {{ isset($data) ? 'card-success card-outline' : '' }}">
+            <div class="card {{ isset($data) ? 'card-danger card-outline' : '' }}">
                 @if (empty($data))
                     <div class="card-header p-2">
                         <ul class="nav nav-pills">
@@ -87,7 +87,7 @@
                                                         <td style="text-align: center;">
                                                             <div class="btn-group">
                                                                 <button type="button"
-                                                                    class="btn btn-success btn-sm dropdown-toggle"
+                                                                    class="btn btn-danger btn-sm dropdown-toggle"
                                                                     data-toggle="dropdown">Aksi </button>
                                                                 <div class="dropdown-menu" role="menu">
                                                                     @if ($item->status_pesanan == 1)
@@ -120,11 +120,70 @@
                                 </div>
                             </div>
                         @empty($data)
-                            <div class="card card-success card-outline">
+                            <div class="card card-danger card-outline">
                                 <div class="card-header">
                                     <h3 class="card-title">Transaksi dan Pendapatan</h3>
                                 </div>
                                 <div class="card-body">
+                                    <form action="" method="POST" enctype="multipart/form-data" id="filter-transaksi">
+                                        @csrf
+                                        <div class="row">
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label for="tanggal_mulai">Dari Tanggal</label>
+                                                    <select name="tanggal_mulai" id="tanggal_mulai"
+                                                        class="form-control select2 select2-danger"
+                                                        data-dropdown-css-class="select2-danger" style="width: 100%;">
+                                                        <option value="">Dari Tanggal</option>
+                                                        @foreach (App\Models\Order::getOrderDates('asc') as $key => $item)
+                                                            <option value="{{ $item->tanggal }}"
+                                                                {{ $item->tanggal == @$tanggal_mulai || $key == 0 ? 'selected' : '' }}>
+                                                                {{ date('d F Y', strtotime($item->tanggal)) }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    <span id="error-tanggal_mulai" class="error invalid-feedback"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label for="tanggal_selesai">Sampai Tanggal</label>
+                                                    <select name="tanggal_selesai" id="tanggal_selesai"
+                                                        class="form-control select2 select2-danger"
+                                                        data-dropdown-css-class="select2-danger" style="width: 100%;">
+                                                        <option value="">Sampai Tanggal</option>
+                                                        @foreach (App\Models\Order::getOrderDates('desc') as $key => $item)
+                                                            <option value="{{ $item->tanggal }}"
+                                                                {{ $item->tanggal == @$tanggal_selesai || $key == 0 ? 'selected' : '' }}>
+                                                                {{ date('d F Y', strtotime($item->tanggal)) }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    <span id="error-tanggal_selesai" class="error invalid-feedback"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label for="jumlah_transaksi">Jumlah Transaksi</label>
+                                                    <input type="text" class="form-control" id="jumlah_transaksi"
+                                                        name="jumlah_transaksi" placeholder="Jumlah Transaksi"
+                                                        value="{{ $jumlah_transaksi }} Transaksi (Selesai)" disabled>
+                                                    <span id="error-jumlah_transaksi" class="error invalid-feedback"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label for="total_pendapatan">Total Pendapatan</label>
+                                                    <input type="text" class="form-control" id="total_pendapatan"
+                                                        name="total_pendapatan" placeholder="Total Pendapatan"
+                                                        value="{{ 'Rp' . number_format($total_pendapatan, 0, ',', '.') }}"
+                                                        disabled>
+                                                    <span id="error-total_pendapatan"
+                                                        class="error invalid-feedback"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
                                     <div class="table-responsive">
                                         <table class="table datatable table-bordered table-hover">
                                             <thead>
@@ -141,7 +200,7 @@
                                                     <tr>
                                                         <td style="text-align: center;">{{ $key + 1 }}</td>
                                                         <td>{{ date('d F Y', strtotime($item->tanggal_pesanan)) }}</td>
-                                                        <td>{{ $item->jumlah_transaksi }} Transaksi Selesai</td>
+                                                        <td>{{ $item->jumlah_transaksi }} Transaksi (Selesai)</td>
                                                         <td>{{ 'Rp' . number_format($item->total_pendapatan, 0, ',', '.') }}
                                                         </td>
                                                         <td></td>
@@ -159,7 +218,7 @@
                             <div class="col-md-6 mb-4 m-lg-0 pl-0">
                                 <div class="input-group px-2">
                                     <input type="text" class="form-control" id="search" name="search"
-                                        placeholder="Cari Produk" autocomplete="off">
+                                        placeholder="Cari Kategori / Produk" autocomplete="off">
                                 </div>
                                 <div class="table-responsive">
                                     <table id="dt-product" class="table" style="width: 100%;">
@@ -186,7 +245,7 @@
                                                                         <div class="custom-control custom-checkbox position-absolute"
                                                                             style="top: 0.5rem; left: 0.5rem; {{ $stok <= 0 ? 'display: none;' : '' }}">
                                                                             <input
-                                                                                class="custom-control-input custom-control-input-success"
+                                                                                class="custom-control-input custom-control-input-danger"
                                                                                 type="checkbox"
                                                                                 id="{{ 'check_' . md5($item->id) }}"
                                                                                 value="{{ base64_encode($item->id) }}">
@@ -206,6 +265,8 @@
                                                                             style="width: 100%; height: 150px;">
                                                                         <div class="card-body">
                                                                             <div class="text-center">
+                                                                                <span
+                                                                                    style="display: none;">{{ $item->category->nama ?? '' }}</span>
                                                                                 <p
                                                                                     style="font-weight: bold; margin-bottom: 4px; font-size: 18px;">
                                                                                     {{ Str::limit($item->nama, 50) }}
@@ -271,7 +332,7 @@
                                         <input type="hidden" name="id_pesanan"
                                             value="{{ base64_encode($data['order']->id) }}">
                                     @endif
-                                    <button type="button" class="btn btn-outline-success mb-3"
+                                    <button type="button" class="btn btn-outline-danger mb-3"
                                         style="font-weight: bold;" onclick="addProductOrder()"><i
                                             class="fas fa-check-double"></i> Daftar
                                         Pesanan</button>
@@ -316,8 +377,8 @@
                                                                     autocomplete="off">
                                                             </td>
                                                             <td>
-                                                                <select class="form-control select2 select2-success"
-                                                                    data-dropdown-css-class="select2-success"
+                                                                <select class="form-control select2 select2-danger"
+                                                                    data-dropdown-css-class="select2-danger"
                                                                     name="level_{{ base64_encode($item->product->id) }}"
                                                                     style="width: 100%;">
                                                                     @foreach (['Tidak Pedas', 'Pedas Sedang', 'Sangat Pedas'] as $level)
@@ -352,8 +413,8 @@
                                         <div class="form-group mb-1">
                                             <label for="member">Member</label>
                                             <select name="member" id="member"
-                                                class="form-control select2 select2-success"
-                                                data-dropdown-css-class="select2-success" style="width: 100%;">
+                                                class="form-control select2 select2-danger"
+                                                data-dropdown-css-class="select2-danger" style="width: 100%;">
                                                 <option value="">Member</option>
                                                 @foreach (['1' => 'Ya', '2' => 'Tidak'] as $key => $value)
                                                     <option value="{{ $key }}"
@@ -371,8 +432,8 @@
                                             style="{{ isset($data) && $data['order']->id_pelanggan ? '' : 'display: none;' }}">
                                             <label for="id_pelanggan">Nama Pelanggan</label>
                                             <select name="id_pelanggan" id="id_pelanggan"
-                                                class="form-control select2 select2-success"
-                                                data-dropdown-css-class="select2-success" style="width: 100%;">
+                                                class="form-control select2 select2-danger"
+                                                data-dropdown-css-class="select2-danger" style="width: 100%;">
                                                 <option value="">Nama Pelanggan</option>
                                                 @foreach ($customer as $item)
                                                     <option value="{{ $item->id }}"
@@ -395,8 +456,8 @@
                                         <div class="form-group mb-1">
                                             <label for="metode_pembayaran">Metode Pembayaran</label>
                                             <select name="metode_pembayaran" id="metode_pembayaran"
-                                                class="form-control select2 select2-success"
-                                                data-dropdown-css-class="select2-success" style="width: 100%;">
+                                                class="form-control select2 select2-danger"
+                                                data-dropdown-css-class="select2-danger" style="width: 100%;">
                                                 <option value="">Metode Pembayaran</option>
                                                 @foreach (['Tunai', 'Transfer Bank'] as $key => $value)
                                                     <option value="{{ $key + 1 }}"
@@ -409,8 +470,8 @@
                                         <div class="form-group mb-1">
                                             <label for="opsi_pengiriman">Opsi Pengiriman</label>
                                             <select name="opsi_pengiriman" id="opsi_pengiriman"
-                                                class="form-control select2 select2-success"
-                                                data-dropdown-css-class="select2-success" style="width: 100%;">
+                                                class="form-control select2 select2-danger"
+                                                data-dropdown-css-class="select2-danger" style="width: 100%;">
                                                 <option value="">Opsi Pengiriman</option>
                                                 @foreach (['1' => 'Diambil di Toko', '2' => 'Dikirim ke Alamat Tujuan'] as $key => $value)
                                                     <option value="{{ $key }}"
@@ -466,10 +527,10 @@
                                         <div class="form-group mt-4">
                                             <input type="hidden" name="status_pesanan" value="">
                                             <input type="hidden" name="total_pembayaran" value="">
-                                            <button type="button" class="btn btn-outline-success"
+                                            <button type="button" class="btn btn-outline-danger"
                                                 onclick="addCart()"><i class="fas fa-cart-plus"></i>
                                                 Keranjang</button>
-                                            <button type="button" class="btn btn-outline-success float-right"
+                                            <button type="button" class="btn btn-outline-danger float-right"
                                                 onclick="addPayment()"><i class="fas fa-shipping-fast"></i>
                                                 Bayar</button>
                                         </div>
@@ -482,11 +543,68 @@
             </div>
         </div>
     @else
-        <div class="card card-success card-outline">
+        <div class="card card-danger card-outline">
             <div class="card-header">
                 <h3 class="card-title">Transaksi dan Pendapatan</h3>
             </div>
             <div class="card-body">
+                <form action="" method="POST" enctype="multipart/form-data" id="filter-transaksi">
+                    @csrf
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label for="tanggal_mulai">Dari Tanggal</label>
+                                <select name="tanggal_mulai" id="tanggal_mulai"
+                                    class="form-control select2 select2-danger"
+                                    data-dropdown-css-class="select2-danger" style="width: 100%;">
+                                    <option value="">Dari Tanggal</option>
+                                    @foreach (App\Models\Order::getOrderDates('asc') as $key => $item)
+                                        <option value="{{ $item->tanggal }}"
+                                            {{ $item->tanggal == @$tanggal_mulai || $key == 0 ? 'selected' : '' }}>
+                                            {{ date('d F Y', strtotime($item->tanggal)) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <span id="error-tanggal_mulai" class="error invalid-feedback"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label for="tanggal_selesai">Sampai Tanggal</label>
+                                <select name="tanggal_selesai" id="tanggal_selesai"
+                                    class="form-control select2 select2-danger"
+                                    data-dropdown-css-class="select2-danger" style="width: 100%;">
+                                    <option value="">Sampai Tanggal</option>
+                                    @foreach (App\Models\Order::getOrderDates('desc') as $key => $item)
+                                        <option value="{{ $item->tanggal }}"
+                                            {{ $item->tanggal == @$tanggal_selesai || $key == 0 ? 'selected' : '' }}>
+                                            {{ date('d F Y', strtotime($item->tanggal)) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <span id="error-tanggal_selesai" class="error invalid-feedback"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label for="jumlah_transaksi">Jumlah Transaksi</label>
+                                <input type="text" class="form-control" id="jumlah_transaksi"
+                                    name="jumlah_transaksi" placeholder="Jumlah Transaksi"
+                                    value="{{ $jumlah_transaksi }} Transaksi (Selesai)" disabled>
+                                <span id="error-jumlah_transaksi" class="error invalid-feedback"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label for="total_pendapatan">Total Pendapatan</label>
+                                <input type="text" class="form-control" id="total_pendapatan"
+                                    name="total_pendapatan" placeholder="Total Pendapatan"
+                                    value="{{ 'Rp' . number_format($total_pendapatan, 0, ',', '.') }}" disabled>
+                                <span id="error-total_pendapatan" class="error invalid-feedback"></span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
                 <div class="table-responsive">
                     <table class="table datatable table-bordered table-hover">
                         <thead>
@@ -503,7 +621,7 @@
                                 <tr>
                                     <td style="text-align: center;">{{ $key + 1 }}</td>
                                     <td>{{ date('d F Y', strtotime($item->tanggal_pesanan)) }}</td>
-                                    <td>{{ $item->jumlah_transaksi }} Transaksi Selesai</td>
+                                    <td>{{ $item->jumlah_transaksi }} Transaksi (Selesai)</td>
                                     <td>{{ 'Rp' . number_format($item->total_pendapatan, 0, ',', '.') }}
                                     </td>
                                     <td></td>
@@ -540,7 +658,7 @@
                     id="form-update-payment">
                     @csrf
                     <input type="hidden" name="_method" value="PUT">
-                    <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-angle-double-right"></i>
+                    <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-angle-double-right"></i>
                         Konfirmasi</button>
                 </form>
             </div>
@@ -568,7 +686,7 @@
         border-bottom: none;
     }
 
-    .form-group label {
+    #form-group-order .form-group label {
         font-size: 12px;
     }
 </style>
@@ -695,7 +813,11 @@
             }
         });
 
-
+        $('[name="tanggal_selesai"]').change(function() {
+            if ($(this).val()) {
+                $('#filter-transaksi').submit();
+            }
+        });
     });
 
     function addProductOrder() {
@@ -724,8 +846,8 @@
                         '<input type="text" class="form-control" name="qty_' + productId +
                         '" placeholder="1" value="' +
                         productQuantity + '" autocomplete="off">',
-                        '<select class="form-control select2 select2-success" name="level_' + productId +
-                        '" data-dropdown-css-class="select2-success" style="width: 100%;">' +
+                        '<select class="form-control select2 select2-danger" name="level_' + productId +
+                        '" data-dropdown-css-class="select2-danger" style="width: 100%;">' +
                         '<option value="Tidak Pedas">Tidak Pedas</option>' +
                         '<option value="Pedas Sedang">Pedas Sedang</option>' +
                         '<option value="Sangat Pedas">Sangat Pedas</option>' +

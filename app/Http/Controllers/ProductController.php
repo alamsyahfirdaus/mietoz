@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
@@ -18,6 +20,7 @@ class ProductController extends Controller
             'title'     => 'Produk',
             'product'   => Product::orderByDesc('id')->get(),
             'kode'      => $this->_nextKode(),
+            'category'  => Category::orderByDesc('id')->get(),
         );
         return view('product-index', $data);
     }
@@ -32,10 +35,11 @@ class ProductController extends Controller
 
         $data = [
             'title'         => 'Produk',
-            'product'       => Product::orderByDesc('id')->get(),
+            'product'       => Product::with(['category'])->orderByDesc('id')->get(),
             'kode'          => isset($product->kode) ? $product->kode : $this->_nextKode(),
             'data'          => $product,
-            'terjual'       => OrderDetail::countProductsSold($product->id)
+            'terjual'       => OrderDetail::countProductsSold($product->id),
+            'category'      => Category::orderByDesc('id')->get(),
         ];
 
         return view('product-index', $data);
@@ -75,6 +79,7 @@ class ProductController extends Controller
             'diskon' => ['nullable', 'integer', 'min:1', 'max:100'],
             'deskripsi' => ['nullable', 'string'],
             'gambar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'id_kategori' => ['required', 'integer', 'exists:kategori,id'],
         ]);
 
         $product->kode = $validatedData['kode'];
@@ -83,6 +88,7 @@ class ProductController extends Controller
         $product->harga = $validatedData['harga'];
         $product->diskon = $validatedData['diskon'];
         $product->deskripsi = $validatedData['deskripsi'];
+        $product->id_kategori = $validatedData['id_kategori'];
 
         if ($request->hasFile('gambar')) {
             $gambarProduk = $request->file('gambar');
@@ -137,5 +143,25 @@ class ProductController extends Controller
             // Jika produk tidak ditemukan, redirect dengan pesan kesalahan
             return redirect()->route('product')->with('error', 'Data produk tidak ditemukan.');
         }
+    }
+
+    public function productSold(Request $request, $id)
+    {
+        $product = Product::find(base64_decode($id));
+
+        if (empty($product->id)) {
+            return redirect()->route('product')->with('error', 'Data produk tidak ditemukan.');
+        }
+
+        $data = [
+            'title'             => 'Produk',
+            'data'              => $product,
+            'product'           => Product::orderByDesc('id')->get(),
+            'terjual'           => OrderDetail::getProductsSold($product->id, $request->input('tanggal_mulai'), $request->input('tanggal_selesai')),
+            'tanggal_mulai'     => $request->input('tanggal_mulai'),
+            'tanggal_selesai'   => $request->input('tanggal_selesai'),
+        ];
+
+        return view('product-sold', $data);
     }
 }

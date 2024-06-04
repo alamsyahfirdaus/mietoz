@@ -18,15 +18,43 @@ use Illuminate\Support\Facades\Session;
 
 class OrderController extends Controller
 {
-    public function index()
+    // public function index()
+    // {
+    //     $data = [
+    //         'title'             => session('level') == 3 ? 'Pendapatan' : 'Penjualan',
+    //         'order'             => Order::with(['customer', 'payment'])->orderByDesc('id')->get(),
+    //         'product'           => Product::with(['category'])->orderByDesc('id')->get(),
+    //         'customer'          => Customer::whereNotNull('kode')->orderBy('nama')->get(),
+    //         'transaction'       => Order::getTransactionsByDate(),
+    //         'tanggal_mulai'     => '',
+    //         'tanggal_selesai'   => '',
+    //     ];
+    //     return view('order-index', $data);
+    // }
+
+    public function index(Request $request)
     {
+        $tanggal_mulai = $request->input('tanggal_mulai', '');
+        $tanggal_selesai = $request->input('tanggal_selesai', '');
+
+        if ($request->isMethod('post')) {
+            $transactionData = Order::getTransactionsByDate($tanggal_mulai, $tanggal_selesai);
+        } else {
+            $transactionData = Order::getTransactionsByDate();
+        }
+
         $data = [
-            'title'         => session('level') == 3 ? 'Pendapatan' : 'Penjualan',
-            'order'         => Order::with(['customer', 'payment'])->orderByDesc('id')->get(),
-            'product'       => Product::orderByDesc('id')->get(),
-            'customer'      => Customer::whereNotNull('kode')->orderBy('nama')->get(),
-            'transaction'   => Order::getTransactionsByDate()
+            'title'                 => session('level') == 3 ? 'Pendapatan' : 'Penjualan',
+            'order'                 => Order::with(['customer', 'payment'])->orderByDesc('id')->get(),
+            'product'               => Product::with(['category'])->orderByDesc('id')->get(),
+            'customer'              => Customer::whereNotNull('kode')->orderBy('nama')->get(),
+            'transaction'           => $transactionData['daily'],
+            'jumlah_transaksi'      => $transactionData['totals']->jumlah_transaksi,
+            'total_pendapatan'      => $transactionData['totals']->total_pendapatan,
+            'tanggal_mulai'         => $tanggal_mulai,
+            'tanggal_selesai'       => $tanggal_selesai,
         ];
+
         return view('order-index', $data);
     }
 
