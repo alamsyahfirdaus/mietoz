@@ -79,7 +79,7 @@ class ProductController extends Controller
             'diskon' => ['nullable', 'integer', 'min:1', 'max:100'],
             'deskripsi' => ['nullable', 'string'],
             'gambar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-            'id_kategori' => ['required', 'integer', 'exists:kategori,id'],
+            'id_kategori' => ['required', 'exists:kategori,id'],
         ]);
 
         $product->kode = $validatedData['kode'];

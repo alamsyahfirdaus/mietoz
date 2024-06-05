@@ -139,7 +139,7 @@
                                     <div class="form-group">
                                         <label for="id_kategori">Kategori<small style="color: #dc3545;">*</small></label>
                                         <div class="input-group">
-                                            <select name="tanggal_selesai" id="tanggal_selesai"
+                                            <select name="id_kategori" id="id_kategori"
                                                 class="form-control select2 select2-danger"
                                                 data-dropdown-css-class="select2-danger" style="width: 450px;">
                                                 <option value="">Pilih Kategori</option>
