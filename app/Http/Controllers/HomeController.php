@@ -187,33 +187,27 @@ class HomeController extends Controller
         $order = Order::where('no_transaksi', $request->no_transaksi)->first();
         $payment = OrderPayment::where('id_pesanan', $order->id)->first();
 
-        if (!$payment->bukti_pembayaran) {
-            if ($request->hasFile('bukti_pembayaran')) {
-                $file = $request->file('bukti_pembayaran');
-                $fileName = date('YmdHis') . '-' . $order->id . '.' . $file->getClientOriginalExtension();
-                $file->move(config('constants.UPLOAD_PATH'), $fileName);
-    
-                OrderPayment::updateOrCreate(
-                    ['id_pesanan' => $order->id],
-                    ['bukti_pembayaran' => $fileName]
-                );
+        if (!$payment->bukti_pembayaran && $request->hasFile('bukti_pembayaran')) {
+            $file = $request->file('bukti_pembayaran');
+            $fileName = date('YmdHis') . '-' . $order->id . '.' . $file->getClientOriginalExtension();
+            $file->move(config('constants.UPLOAD_PATH'), $fileName);
 
-                $message = 'Bukti pembayaran berhasil terkirim dan sedang dalam proses verifikasi.';
-            }
+            OrderPayment::updateOrCreate(
+                ['id_pesanan' => $order->id],
+                ['bukti_pembayaran' => $fileName]
+            );
+
+            $message = 'Bukti pembayaran berhasil terkirim dan sedang dalam proses verifikasi.';
+        } elseif ($order->status_pesanan == 3) {
+            $message = 'Pesanan telah selesai dan pembayarannya sudah diverifikasi.';
         } else {
-            if ($order->status_pesanan == 3) {
-                $message = 'Pesanan telah selesai.';
-            } else {
-                $message = 'Pesanan sedang diproses.';
-            }
-            
+            $message = 'Pesanan sedang diproses dan tunggu konfirmasi selanjutnya.';
         }
-        
 
         $data = [
-            'success'       => true,
-            'message'       => $message,
-            'previous'      => true
+            'success' => true,
+            'message' => $message,
+            'previous' => true
         ];
 
         return response()->json($data, 200);
