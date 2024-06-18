@@ -43,7 +43,7 @@
                                                     <tr>
                                                         <td style="text-align: center;">{{ $key + 1 }}</td>
                                                         <td>{{ $item->no_transaksi }}</td>
-                                                        <td>{{ $item->nama_pelanggan ?? ($item->customer->nama ?? '-') }}
+                                                        <td><a href="{{ route('home.chat', ['id' => base64_encode($item->id)]) }}" title="Chat Pelanggan">{{ $item->nama_pelanggan ?? ($item->customer->nama ?? '-') }}</a>
                                                         </td>
                                                         <td>{{ date('d F Y', strtotime($item->tanggal_pesanan)) }}</td>
                                                         <td>{{ 'Rp' . number_format($item->total_harga, 0, ',', '.') }}</td>

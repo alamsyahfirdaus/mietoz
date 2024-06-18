@@ -51,6 +51,9 @@ Route::get('shop', [HomeController::class, 'shop'])->name('home.shop')->middlewa
 Route::post('shop', [OrderController::class, 'save'])->name('add.order')->middleware('guest');
 Route::get('order/{id}/payment', [HomeController::class, 'payOrder'])->name('home.show')->middleware('guest');
 Route::post('payment', [HomeController::class, 'confirmPayment'])->name('home.payment')->middleware('guest');
+Route::post('message', [HomeController::class, 'sendMessage'])->name('home.message');
+Route::match(['get', 'post'], 'order/{id}/chat', [HomeController::class, 'chatList'])->name('home.chat');
+
 
 // Auth and Admin Routes
 Route::middleware(['auth', 'admin'])->group(function () {

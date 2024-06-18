@@ -70,9 +70,7 @@
                                                 {{ $item->stok - \App\Models\OrderDetail::countProductsSold($item->id) }}
                                             </td>
                                             <td>
-                                                <a href="{{ route('product.sold', ['id' => base64_encode($item->id)]) }}"
-                                                    type="button"
-                                                    class="btn btn-block btn-default btn-sm">{{ \App\Models\OrderDetail::countProductsSold($item->id) }}</a>
+                                                <a href="{{ route('product.sold', ['id' => base64_encode($item->id)]) }}" title="Produk Terjual" style="font-weight: bold;">{{ \App\Models\OrderDetail::countProductsSold($item->id) }}</a>
                                             </td>
                                             <td>
                                                 <span title="{{ isset($item->deskripsi) ? $item->deskripsi : '' }}">

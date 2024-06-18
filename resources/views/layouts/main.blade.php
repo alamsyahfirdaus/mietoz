@@ -165,7 +165,7 @@
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('order') }}"
-                                        class="nav-link {{ Request::segment(1) == 'order' ? 'active' : '' }}">Penjualan</a>
+                                        class="nav-link {{ Request::segment(1) == 'order' && $title == 'Penjualan' ? 'active' : '' }}">Penjualan</a>
                                 </li>
                             @else
                                 <li class="nav-item">
@@ -188,6 +188,52 @@
 
                 <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
                     @if (Auth::check())
+                        @php
+                            $countUnreadMessages    = App\Models\Chat::countUnreadMessages();
+                            $latestMessages         = App\Models\Chat::latestMessages();
+                        @endphp
+                        <li class="nav-item dropdown" style="{{ count($latestMessages) < 1 ? 'display: none;' : ''  }}">
+                            <a class="nav-link" data-toggle="dropdown" href="javascript:void(0);">
+                                <i class="far fa-bell"></i>
+                                @if ($countUnreadMessages >= 1)
+                                    <span class="badge badge-light navbar-badge">
+                                        {{ $countUnreadMessages > 9 ? '9+' : $countUnreadMessages }}
+                                    </span>
+                                @endif
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                                @foreach ($latestMessages as $key => $item)
+                                    <a href="{{ route('home.chat', ['id' => base64_encode($item->id_pesanan)]) }}"
+                                        class="dropdown-item">
+                                        <div class="media">
+                                            <img src="{{ asset('assets/img/profile.png') }}" alt=""
+                                                class="img-size-50 mr-3 img-circle">
+                                            <div class="media-body">
+                                                <h3 class="dropdown-item-title">
+                                                    {{ $item->order->id_pelanggan ? $item->order->cutomer->nama : $item->order->nama_pelanggan }}
+                                                </h3>
+                                                <p class="text-sm">
+                                                    {{ \Illuminate\Support\Str::limit($item->message, 20, '...') }}
+                                                </p>
+                                                <p class="text-sm text-muted">
+                                                    <i class="far fa-clock mr-1"></i>
+                                                    {{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y H:i') }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                @endforeach
+                                @if (Request::segment(1) == 'home')
+                                    <a href="javascript:void(0);" class="dropdown-item dropdown-footer"
+                                        onclick="seeAllMessages();">Lihat Semua
+                                        Pesan</a>
+                                @else
+                                    <a href="{{ route('home') }}" class="dropdown-item dropdown-footer">Lihat Semua
+                                        Pesan</a>
+                                @endif
+                            </div>
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)"
                                 id="user-profile">
@@ -216,6 +262,10 @@
                             <div class="dropdown-menu dropdown-menu-right">
                                 <a href="javascript:void(0)" onclick="confirmPayment()" class="dropdown-item">
                                     <i class="fas fa-exchange-alt mr-2"></i> Konfirmasi Bayar
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a href="javascript:void(0)" onclick="sendMessage()" class="dropdown-item">
+                                    <i class="fas fa-paper-plane mr-2"></i> Kirim Pesan
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 <a href="{{ route('login') }}" class="dropdown-item">
@@ -276,8 +326,7 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                <form action="{{ route('home.payment') }}" method="POST"
-                                    enctype="multipart/form-data" id="form-data">
+                                <form action="" method="POST" enctype="multipart/form-data" id="form-data">
                                     @csrf
                                     <div class="modal-body">
                                         <div class="form-group">
@@ -288,7 +337,7 @@
                                                 autocomplete="off" value="">
                                             <span id="error-no_transaksi" class="error invalid-feedback"></span>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group bukti_pembayaran" style="display: none;">
                                             <label for="bukti_pembayaran">Bukti Pembayaran<small
                                                     style="color: #dc3545;">*</small></label>
                                             <div class="input-group">
@@ -305,8 +354,7 @@
                                     </div>
                                     <div class="modal-footer justify-content-start">
                                         <button type="submit" class="btn btn-danger btn-sm"><i
-                                                class="fas fa-angle-double-up"></i>
-                                            Kirim Bukti Bayar</button>
+                                                class="fas fa-angle-double-up"></i></button>
                                     </div>
                                 </form>
                             </div>
@@ -314,11 +362,24 @@
                     </div>
 
                     <script>
-                        function confirmPayment() {
-                            $('#form-data .form-control').val('').change();
-                            $('#form-data .form-control').removeClass('is-invalid');
-                            $('.modal-title').text('Konfirmasi Bayar');
+                        function resetForm(actionUrl, title, buttonText, showPaymentProof) {
+                            const form = $('.modal-content #form-data');
+                            form.find('.form-control').val('').change().removeClass('is-invalid');
+                            form.attr('action', actionUrl);
+                            $('.modal-title').text(title);
+                            form.find('.modal-footer .btn').html(buttonText);
+                            $('.bukti_pembayaran').toggle(showPaymentProof);
                             $('#modal-form').modal('show');
+                        }
+
+                        function confirmPayment() {
+                            resetForm('{{ route('home.payment') }}', 'Konfirmasi Bayar',
+                                '<i class="fas fa-angle-double-up"></i> Kirim Bukti Bayar', true);
+                        }
+
+                        function sendMessage() {
+                            resetForm('{{ route('home.message') }}', 'Kirim Pesan', '<i class="fas fa-paper-plane"></i> Kirim Pesan',
+                                false);
                         }
                     </script>
                 @endif

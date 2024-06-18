@@ -10,6 +10,7 @@ use App\Models\Customer;
 use App\Models\User;
 use App\Models\Bank;
 use App\Models\Carousel;
+use App\Models\Chat;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -17,6 +18,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -25,7 +27,8 @@ class HomeController extends Controller
         $data = array(
             'title'     => 'Beranda',
             'order'     => Order::getOrdersOnline(),
-            'transaksi' => Order::getSalesByMonth()
+            'transaksi' => Order::getSalesByMonth(),
+            'chats'     => Chat::latestMessages(100, null),
         );
 
         if (session('role') == 1) {
@@ -155,7 +158,7 @@ class HomeController extends Controller
         $order = Order::find(base64_decode($id));
 
         if (empty($order->id)) {
-            return redirect()->route('order')->with('error', 'Data pesanan tidak ditemukan.');
+            return redirect()->route('home.shop')->with('error', 'Data pesanan tidak ditemukan.');
         }
 
         $payment = OrderPayment::where('id_pesanan', $order->id)->first();
@@ -211,5 +214,81 @@ class HomeController extends Controller
         ];
 
         return response()->json($data, 200);
+    }
+
+    public function sendMessage(Request $request): JsonResponse
+    {
+        $validatedData = $request->validate([
+            'no_transaksi' => ['required', 'string', 'max:255', 'exists:pesanan,no_transaksi'],
+        ]);
+
+        $order = Order::where('no_transaksi', $validatedData['no_transaksi'])->firstOrFail();
+
+        $data = [
+            'success' => true,
+            'message' => 'Pesan berhasil dikirim.',
+            'url'     => route('home.chat', base64_encode($order->id)),
+        ];
+
+        return response()->json($data, 200);
+    }
+
+    public function chatList($id)
+    {
+        $orderId = base64_decode($id);
+        $order = Order::find($orderId);
+
+        if (empty($order)) {
+            return redirect()->route('home.shop')->with('error', 'Data pesanan tidak ditemukan.');
+        }
+
+        if (request()->isMethod('post')) {
+
+            date_default_timezone_set('Asia/Jakarta');
+
+            $validatedData = request()->validate([
+                'message' => 'required|string|max:255',
+            ]);
+
+            $chat = new Chat();
+            $chat->message = $validatedData['message'];
+            $chat->id_pesanan = $orderId;
+            $chat->id_kasir = Auth::check() ? auth()->user()->id : null;
+            $chat->tanggal = now();
+            $chat->save();
+
+            return redirect()->route('home.chat', ['id' => $id])->with('success', 'Pesan berhasil dikirim.');
+        } else {
+            $chatList = [];
+            foreach (Chat::with(['order.customer', 'user'])->where('id_pesanan', $orderId)->get() as $key => $item) {
+                if ($item->id_kasir && !$item->is_read) {
+                    $item->is_read = true;
+                    $item->save();
+                } else {
+                    if ((!$item->is_read && $item->id_kasir) || (Auth::check() && !$item->id_kasir && !$item->is_read)) {
+                        $item->is_read = true;
+                        $item->save();
+                    }
+                }
+
+                $chatList[] = array(
+                    'id'                => $item->id,
+                    'message'           => $item->message,
+                    'id_pesanan'        => $item->id_pesanan,
+                    'nama_pelanggan'    => $item->order->id_pelanggan ? $item->order->customer->nama : $item->order->nama_pelanggan,
+                    'id_kasir'          => $item->id_kasir,
+                    'nama_kasir'        => $item->user ? $item->user->name : null,
+                    'tanggal'           => $item->tanggal,
+                );
+            }
+
+            $data = [
+                'title'         => Auth::check() ? 'Chat Pelanggan' : 'Chat',
+                'id_pesanan'    => $orderId,
+                'chat'          => $chatList
+            ];
+
+            return view('order-chat', $data);
+        }
     }
 }

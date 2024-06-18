@@ -69,7 +69,7 @@
                                             <tr>
                                                 <td style="text-align: center;">{{ $key + 1 }}</td>
                                                 <td>{{ $item->no_transaksi }}</td>
-                                                <td>{{ $item->nama_pelanggan ?? ($item->customer->nama ?? '-') }}</td>
+                                                <td><a href="{{ route('home.chat', ['id' => base64_encode($item->id)]) }}" title="Chat Pelanggan">{{ $item->nama_pelanggan ?? ($item->customer->nama ?? '-') }}</a></td>
                                                 <td>{{ date('d F Y', strtotime($item->tanggal_pesanan)) }}</td>
                                                 <td>{{ 'Rp' . number_format($item->total_harga, 0, ',', '.') }}</td>
                                                 <td style="width: 150px;">
@@ -82,8 +82,7 @@
                                                 </td>
                                                 <td style="text-align: center;">
                                                     <div class="btn-group">
-                                                        <button type="button"
-                                                            class="btn btn-danger btn-sm dropdown-toggle"
+                                                        <button type="button" class="btn btn-danger btn-sm dropdown-toggle"
                                                             data-toggle="dropdown">Aksi </button>
                                                         <div class="dropdown-menu" role="menu">
                                                             <a class="dropdown-item"
@@ -137,6 +136,43 @@
                     </div>
                 </div>
             </div>
+            @if (session('level') == 1)
+                <div class="col-lg-12">
+                    <div id="direct-chat" class="card card-danger card-outline">
+                        <div class="card-header">
+                            <h5 class="card-title">Chat Pelanggan</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-body p-0">
+                                <div class="table-responsive mailbox-messages">
+                                    <table id="datatable" class="table table-hover table-striped">
+                                        <thead style="display: none;">
+                                            <tr>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($chats as $key => $item)
+                                            <tr>
+                                                <td class="mailbox-name"><a href="{{ route('home.chat', ['id' => base64_encode($item->id_pesanan)]) }}">{{ $item->order->id_pelanggan ? $item->order->cutomer->nama : $item->order->nama_pelanggan }}</a>
+                                                </td>
+                                                <td class="mailbox-subject">{{ \Illuminate\Support\Str::limit($item->message, 100, '...') }}
+                                                </td>
+                                                <td class="mailbox-date">{{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y H:i') }}</td>
+                                                <td style="width: 5%;"><a href="{{ route('home.chat', ['id' => base64_encode($item->id_pesanan)]) }}" type="button" class="btn btn-danger btn-sm"><i class="fas fa-folder-open"></i></a></td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
     <style>
@@ -151,15 +187,15 @@
                 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
                 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
             ];
-    
+
             var jumlah_transaksi = [];
             var total_pendapatan = [];
-    
+
             for (var i = 1; i <= 12; i++) {
                 jumlah_transaksi.push(salesData[i] ? salesData[i].jumlah_transaksi : 0);
                 total_pendapatan.push(salesData[i] ? salesData[i].total_pendapatan : 0);
             }
-    
+
             // Grafik Jumlah Transaksi
             var transaksiCanvas = $('#grafik-jumlah-transaksi').get(0).getContext('2d');
             var transaksiData = {
@@ -190,7 +226,7 @@
                 data: transaksiData,
                 options: transaksiOptions
             });
-    
+
             // Grafik Total Pendapatan
             var pendapatanCanvas = $('#grafik-total-pendapatan').get(0).getContext('2d');
             var pendapatanData = {
@@ -222,6 +258,17 @@
                 options: pendapatanOptions
             });
         });
+
+        function seeAllMessages() {
+            var $directChat = $('#direct-chat .card-body');
+            var targetOffset = $directChat.prop('scrollHeight');
+
+            $('html, body').animate({
+                scrollTop: $directChat.offset().top + targetOffset
+            }, 300);
+
+            $directChat.scrollTop(targetOffset);
+        }
     </script>
-       
+
 @endsection

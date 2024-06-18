@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 04, 2024 at 03:38 PM
+-- Generation Time: Jun 18, 2024 at 02:26 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.0.19
 
@@ -43,6 +43,22 @@ CREATE TABLE `carousel` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `judul` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `gambar` text COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `chats`
+--
+
+CREATE TABLE `chats` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id_pesanan` bigint(20) UNSIGNED DEFAULT NULL,
+  `id_kasir` bigint(20) UNSIGNED DEFAULT NULL,
+  `sender` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_read` tinyint(1) NOT NULL DEFAULT 0,
+  `tanggal` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -99,7 +115,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (8, '2024_04_15_114528_create_bank_table', 1),
 (9, '2024_04_15_114701_create_carousel_table', 1),
 (10, '2024_06_02_153439_create_kategori_table', 1),
-(11, '2024_06_02_153545_add_kategori_id_to_produk_table', 1);
+(11, '2024_06_02_153545_add_kategori_id_to_produk_table', 1),
+(12, '2024_06_17_010337_create_chats_table', 1);
 
 -- --------------------------------------------------------
 
@@ -242,7 +259,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `username`, `telephone`, `password`, `profile`, `level`, `created_at`, `updated_at`) VALUES
-(1, 'Alamsyah Firdaus', 'alamsyah.firdaus.af31@gmail.com', 'alamsyah', NULL, '$2y$10$RiNDPTkJY17opI.G3Ddp5eChlvyAoC.PIi581kuHk4iPUn2WBTxl.', NULL, '3', '2024-06-04 06:20:23', '2024-06-04 06:20:23');
+(1, 'Alamsyah Firdaus', 'alamsyah.firdaus.af31@gmail.com', 'alamsyah', NULL, '$2y$10$VclM/OgNoSAnJI8FWyX0CO6J7L32C.oO1miZCZV1QitIAKIcFd9M6', NULL, '1', '2024-06-16 20:11:19', '2024-06-16 20:11:19');
 
 --
 -- Indexes for dumped tables
@@ -260,6 +277,14 @@ ALTER TABLE `bank`
 --
 ALTER TABLE `carousel`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `chats`
+--
+ALTER TABLE `chats`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `chats_id_pesanan_foreign` (`id_pesanan`),
+  ADD KEY `chats_id_kasir_foreign` (`id_kasir`);
 
 --
 -- Indexes for table `detail_pesanan`
@@ -345,6 +370,12 @@ ALTER TABLE `carousel`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `chats`
+--
+ALTER TABLE `chats`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `detail_pesanan`
 --
 ALTER TABLE `detail_pesanan`
@@ -360,7 +391,7 @@ ALTER TABLE `kategori`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `pelanggan`
@@ -401,6 +432,13 @@ ALTER TABLE `users`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `chats`
+--
+ALTER TABLE `chats`
+  ADD CONSTRAINT `chats_id_kasir_foreign` FOREIGN KEY (`id_kasir`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `chats_id_pesanan_foreign` FOREIGN KEY (`id_pesanan`) REFERENCES `pesanan` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `detail_pesanan`
