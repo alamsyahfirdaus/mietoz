@@ -43,6 +43,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('bank/{id}', [HomeController::class, 'deleteBank'])->name('bank.delete');
         Route::match(['post', 'put'], 'carousel/save', [HomeController::class, 'saveCarousel'])->name('carousel.save');
         Route::delete('carousel/{id}', [HomeController::class, 'deleteCarousel'])->name('carousel.delete');
+        Route::post('nochatwa', [HomeController::class, 'updateNoWhatsApp'])->name('wa.save');
     });
 });
 

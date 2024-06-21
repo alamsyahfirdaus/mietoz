@@ -12,4 +12,9 @@ class Carousel extends Model
     protected $table = 'carousel';
     protected $primaryKey = 'id';
     public $timestamps = false;
+
+    protected $fillable = [
+        'judul',
+        'gambar'
+    ];
 }

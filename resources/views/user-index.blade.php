@@ -294,47 +294,68 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover datatable">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 5%; text-align: center;">No</th>
-                                        <th>Judul</th>
-                                        <th>Gambar</th>
-                                        <th style="width: 5%; text-align: center;">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($carousel as $key => $item)
-                                        <tr>
-                                            <td style="text-align: center;">{{ $key + 1 }}</td>
-                                            <td>{{ $item->judul ?? '-' }}</td>
-                                            <td style="width: 150px;">
-                                                <img class=""
-                                                    src="{{ asset('upload_images/' . $item->gambar) }}"
-                                                    alt="{{ $item->judul }}" style="width: 150px; height: 100px;">
-                                            </td>
-                                            <td style="text-align: center;">
-                                                <div class="btn-group">
-                                                    <button type="button"
-                                                        class="btn btn-danger btn-sm dropdown-toggle"
-                                                        data-toggle="dropdown">Aksi </button>
-                                                    <div class="dropdown-menu" role="menu">
-                                                        {!! Form::open([
-                                                            'route' => ['carousel.delete', base64_encode($item->id)],
-                                                            'method' => 'DELETE',
-                                                            'id' => 'remove-' . md5('carousel.delete'),
-                                                        ]) !!}
-                                                        <a class="dropdown-item" href="javascript:void(0)"
-                                                            onclick="deleteData('{{ md5('carousel.delete') }}')">Hapus</a>
-                                                        {!! Form::close() !!}
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover datatable">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 5%; text-align: center;">No</th>
+                                                <th>Judul</th>
+                                                <th>Gambar</th>
+                                                <th style="width: 5%; text-align: center;">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($carousel as $key => $item)
+                                                <tr>
+                                                    <td style="text-align: center;">{{ $key + 1 }}</td>
+                                                    <td>{{ $item->judul ?? '-' }}</td>
+                                                    <td style="width: 150px;">
+                                                        <img class=""
+                                                            src="{{ asset('upload_images/' . $item->gambar) }}"
+                                                            alt="{{ $item->judul }}" style="width: 150px; height: 100px;">
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <div class="btn-group">
+                                                            <button type="button"
+                                                                class="btn btn-danger btn-sm dropdown-toggle"
+                                                                data-toggle="dropdown">Aksi </button>
+                                                            <div class="dropdown-menu" role="menu">
+                                                                {!! Form::open([
+                                                                    'route' => ['carousel.delete', base64_encode($item->id)],
+                                                                    'method' => 'DELETE',
+                                                                    'id' => 'remove-' . md5('carousel.delete'),
+                                                                ]) !!}
+                                                                <a class="dropdown-item" href="javascript:void(0)"
+                                                                    onclick="deleteData('{{ md5('carousel.delete') }}')">Hapus</a>
+                                                                {!! Form::close() !!}
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <form action="{{ route('wa.save') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="form-group">
+                                        <label for="">Chat Pelanggan</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">WhatsApp</span>
+                                            </div>
+                                            <input type="text" class="form-control" id="no_whatsapp" name="no_whatsapp" value="{{ $no_whatsapp }}" placeholder="Nomor WhatsApp" autocomplete="off">
+                                            <span class="input-group-append">
+                                                <button type="submit" class="btn btn-danger"><i class="fas fa-save"></i></button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -189,10 +189,10 @@
                 <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
                     @if (Auth::check())
                         @php
-                            $countUnreadMessages    = App\Models\Chat::countUnreadMessages();
-                            $latestMessages         = App\Models\Chat::latestMessages();
+                            $countUnreadMessages = App\Models\Chat::countUnreadMessages();
+                            $latestMessages = App\Models\Chat::latestMessages();
                         @endphp
-                        <li class="nav-item dropdown" style="{{ count($latestMessages) < 1 ? 'display: none;' : ''  }}">
+                        <li class="nav-item dropdown" style="{{ count($latestMessages) < 1 ? 'display: none;' : '' }}">
                             <a class="nav-link" data-toggle="dropdown" href="javascript:void(0);">
                                 <i class="far fa-bell"></i>
                                 @if ($countUnreadMessages >= 1)
@@ -351,10 +351,19 @@
                                             </div>
                                             <span id="error-bukti_pembayaran" class="error invalid-feedback"></span>
                                         </div>
+                                        <div class="form-group chat_whatsapp">
+                                            <textarea name="chat_whatsapp" id="chat_whatsapp" class="form-control" disabled style="font-size: 12px;"></textarea>
+                                        </div>
                                     </div>
                                     <div class="modal-footer justify-content-start">
                                         <button type="submit" class="btn btn-danger btn-sm"><i
                                                 class="fas fa-angle-double-up"></i></button>
+                                        @php
+                                            $noWhatsApp = App\Models\Carousel::findOrFail(1)->judul;
+                                        @endphp
+                                        <a href="https://wa.me/{{ $noWhatsApp }}" type="button" target="_balnk"
+                                            class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i>
+                                            WhatsApp</a>
                                     </div>
                                 </form>
                             </div>
@@ -362,24 +371,30 @@
                     </div>
 
                     <script>
-                        function resetForm(actionUrl, title, buttonText, showPaymentProof) {
+                        function resetForm(actionUrl, title, buttonText, buktiPembayaran, chatWhatsApp) {
                             const form = $('.modal-content #form-data');
                             form.find('.form-control').val('').change().removeClass('is-invalid');
                             form.attr('action', actionUrl);
                             $('.modal-title').text(title);
-                            form.find('.modal-footer .btn').html(buttonText);
-                            $('.bukti_pembayaran').toggle(showPaymentProof);
+                            form.find('.modal-footer .btn-danger').html(buttonText);
+                            $('.bukti_pembayaran').toggle(buktiPembayaran);
+                            $('.chat_whatsapp').toggle(chatWhatsApp);
+                            if (chatWhatsApp == true) {
+                                $('#chat_whatsapp').val(
+                                    'Jika sudah melakukan pemesanan, masukkan Nomor Transaksi. Jika belum, kirim pesan melalui WhatsApp.'
+                                    );
+                            }
                             $('#modal-form').modal('show');
                         }
 
                         function confirmPayment() {
                             resetForm('{{ route('home.payment') }}', 'Konfirmasi Bayar',
-                                '<i class="fas fa-angle-double-up"></i> Kirim Bukti Bayar', true);
+                                '<i class="fas fa-angle-double-up"></i> Kirim Bukti Bayar', true, false);
                         }
 
                         function sendMessage() {
                             resetForm('{{ route('home.message') }}', 'Kirim Pesan', '<i class="fas fa-paper-plane"></i> Kirim Pesan',
-                                false);
+                                false, true);
                         }
                     </script>
                 @endif

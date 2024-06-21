@@ -41,10 +41,11 @@ class HomeController extends Controller
     public function setting()
     {
         $data = [
-            'title'     => 'Pengaturan',
-            'users'     => User::orderByDesc('id')->whereNotIn('id', [1])->get(),
-            'bank'      => Bank::orderByDesc('id')->get(),
-            'carousel'  => Carousel::orderByDesc('id')->take(5)->get()
+            'title'         => 'Pengaturan',
+            'users'         => User::orderByDesc('id')->whereNotIn('id', [1])->get(),
+            'bank'          => Bank::orderByDesc('id')->get(),
+            'carousel'      => Carousel::orderByDesc('id')->whereNotIn('id', [1])->take(5)->get(),
+            'no_whatsapp'   => Carousel::findOrFail(1)->judul,
 
         ];
         return view('user-index', $data);
@@ -145,9 +146,9 @@ class HomeController extends Controller
     public function shop()
     {
         $data = array(
-            'title'     => '',
-            'carousel'  => Carousel::all(),
-            'product'   => Product::with(['category'])->orderByDesc('id')->get(),
+            'title'         => '',
+            'carousel'      => Carousel::whereNotIn('id', [1])->get(),
+            'product'       => Product::with(['category'])->orderByDesc('id')->get(),
         );
 
         return view('shop', $data);
@@ -290,5 +291,19 @@ class HomeController extends Controller
 
             return view('order-chat', $data);
         }
+    }
+
+    public function updateNoWhatsApp(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'no_whatsapp' => ['required', 'string', 'regex:/^(\+62|62|0)8[1-9][0-9]{6,11}$/'],
+        ]);
+
+        $user = Carousel::findOrFail(1);
+
+        $user->judul = $validated['no_whatsapp'];
+        $user->save();
+
+        return redirect()->back()->with('success', 'Nomor WhatsApp berhasil diperbarui.');
     }
 }
