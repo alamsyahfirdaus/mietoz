@@ -390,6 +390,7 @@
                             productQuantity + '" autocomplete="off">',
                             '<select class="form-control select2 select2-danger" name="level_' + productId +
                             '" data-dropdown-css-class="select2-danger" style="width: 100%;">' +
+                            '<option value="">Level</option>' +
                             '<option value="Tidak Pedas">Tidak Pedas</option>' +
                             '<option value="Pedas Sedang">Pedas Sedang</option>' +
                             '<option value="Sangat Pedas">Sangat Pedas</option>' +

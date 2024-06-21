@@ -206,13 +206,14 @@ class OrderController extends Controller
             $product = Product::find(base64_decode($productId));
             if ($product && $product->stok - OrderDetail::countProductsSold($product->id) >= 1) {
                 $quantity = max(1, $request->input('qty_' . $productId, 1));
+                $level = $request->input('level_' . $productId) ? $request->input('level_' . $productId) : null;
 
                 $orderDetail = OrderDetail::updateOrCreate(
                     ['id_pesanan' => $order->id, 'id_produk' => $product->id],
                     [
                         'jumlah_produk' => $quantity,
                         'harga_satuan' => $product->harga * (100 - $product->diskon) / 100,
-                        'level' => $request->input('level_' . $productId)
+                        'level' => $level
                     ]
                 );
 
