@@ -468,7 +468,7 @@
                                             </select>
                                             <span id="error-metode_pembayaran" class="error invalid-feedback"></span>
                                         </div>
-                                        <div class="form-group mb-1">
+                                        <div class="form-group mb-1" style="display: none;">
                                             <label for="opsi_pengiriman">Opsi Pengiriman</label>
                                             <select name="opsi_pengiriman" id="opsi_pengiriman"
                                                 class="form-control select2 select2-danger"

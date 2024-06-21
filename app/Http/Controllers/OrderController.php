@@ -172,14 +172,16 @@ class OrderController extends Controller
             'member' => 'required|in:1,2',
             'id_pelanggan' => ($request->input('member') == 1) ? 'required|exists:pelanggan,id' : 'nullable|exists:pelanggan,id',
             'nama_pelanggan' => ($request->input('member') == 2) ? 'required|string' : 'nullable|string',
-            'telepon_pelanggan' => ($request->input('member') == 2 && $request->input('metode_pembayaran') == 2) ? 'required|string|numeric|min:10' : 'nullable|string|numeric|min:10',
+            // 'telepon_pelanggan' => ($request->input('member') == 2 && $request->input('metode_pembayaran') == 2) ? 'required|string|numeric|min:10' : 'nullable|string|numeric|min:10',
+            'telepon_pelanggan' => 'nullable|string|numeric|min:10',
             'status_pesanan' => 'required|in:1,2,3',
             'opsi_pengiriman' => 'required|in:1,2',
             'biaya_pengiriman' => 'nullable|numeric|min:0',
             'keterangan' => ($request->input('member') == 2 && $request->input('opsi_pengiriman') == 2) ? 'required|string|max:255' : 'nullable|string|max:255',
             'metode_pembayaran' => ($request->input('status_pesanan') != 1) ? 'required|in:1,2' : '',
             'total_pembayaran' => ($request->input('status_pesanan') != 1) ? 'required|numeric' : '',
-            'jumlah_pembayaran' => ($request->input('status_pesanan') != 1 && $request->input('opsi_pengiriman') == 1) ? 'required|numeric|min:' . $request->input('total_pembayaran') : '',
+            // 'jumlah_pembayaran' => ($request->input('status_pesanan') != 1 && $request->input('opsi_pengiriman') == 1) ? 'required|numeric|min:' . $request->input('total_pembayaran') : '',
+            'jumlah_pembayaran' => ($request->input('status_pesanan') != 1 && $request->input('metode_pembayaran') == 1) ?  : '',
         ]);
 
         $order = Order::find(base64_decode($request->id_pesanan)) ?? new Order([

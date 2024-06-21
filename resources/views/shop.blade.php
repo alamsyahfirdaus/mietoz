@@ -176,14 +176,14 @@
                                         placeholder="Total Pembayaran" value="" autocomplete="off" disabled>
                                     <span id="error-total_bayar" class="error invalid-feedback"></span>
                                 </div>
-                                <div class="form-group mb-1">
+                                <div class="form-group mb-1" style="display: none;">
                                     <label for="opsi_pengiriman">Opsi Pengiriman</label>
                                     <select name="opsi_pengiriman" id="opsi_pengiriman"
                                         class="form-control select2 select2-danger"
                                         data-dropdown-css-class="select2-danger" style="width: 100%;">
                                         <option value="">Opsi Pengiriman</option>
                                         @foreach (['1' => 'Diambil di Toko', '2' => 'Dikirim ke Alamat Tujuan'] as $key => $value)
-                                            <option value="{{ $key }}">{{ $value }}</option>
+                                            <option value="{{ $key }}" {{ $key == 1 ? 'selected' : '' }}>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                     <span id="error-opsi_pengiriman" class="error invalid-feedback"></span>
